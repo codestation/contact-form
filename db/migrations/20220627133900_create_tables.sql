@@ -25,5 +25,8 @@ create table if not exists contacts
     check (char_length(tag) <= 256)
 );
 
+create index contacts_external_id_index
+    on contacts (external_id);
+
 -- +migrate Down
 drop table if exists contacts;
