@@ -31,4 +31,5 @@ COPY --from=builder /src/release/contact-form /usr/local/bin/contact-form
 
 USER runner
 
-CMD ["/usr/local/bin/contact-form", "serve"]
+ENTRYPOINT ["/usr/local/bin/contact-form"]
+CMD ["serve"]
