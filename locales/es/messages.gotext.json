@@ -2,11 +2,6 @@
     "language": "es",
     "messages": [
         {
-            "id": "Invalid profile ID",
-            "message": "Invalid profile ID",
-            "translation": "ID de perfil inválido"
-        },
-        {
             "id": "Failed to read request",
             "message": "Failed to read request",
             "translation": "Error al leer la petición"
@@ -17,39 +12,49 @@
             "translation": "La petición no pasó la validación"
         },
         {
+            "id": "Failed to validate captcha, please try again later.",
+            "message": "Failed to validate captcha, please try again later.",
+            "translation": "Error al validar el captcha, por favor intente mas tarde."
+        },
+        {
+            "id": "Captcha validation failed",
+            "message": "Captcha validation failed",
+            "translation": "La validación de captcha ha fallado"
+        },
+        {
+            "id": "Failed to save contact",
+            "message": "Failed to save contact",
+            "translation": "Error al salvar el contacto"
+        },
+        {
+            "id": "Failed to send email",
+            "message": "Failed to send email",
+            "translation": "Error al enviar el correo"
+        },
+        {
             "id": "An error occurred",
             "message": "An error occurred",
             "translation": "Ha ocurrido un error"
         },
         {
-            "id": "Profile not found",
-            "message": "Profile not found",
-            "translation": "Perfil no encontrado"
+            "id": "[{AppName}] - New contact",
+            "message": "[{AppName}] - New contact",
+            "translation": "[{AppName}] - Nuevo contacto",
+            "placeholders": [
+                {
+                    "id": "AppName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "m.appName"
+                }
+            ]
         },
         {
-            "id": "Failed to get profile",
-            "message": "Failed to get profile",
-            "translation": "Error al obtener perfil"
-        },
-        {
-            "id": "Failed to list profiles",
-            "message": "Failed to list profiles",
-            "translation": "Error al listar perfiles"
-        },
-        {
-            "id": "Failed to save profile",
-            "message": "Failed to save profile",
-            "translation": "Error al guardar el perfil"
-        },
-        {
-            "id": "Failed to update profile",
-            "message": "Failed to update profile",
-            "translation": "Error al actualizar el perfil"
-        },
-        {
-            "id": "Failed to remove profile",
-            "message": "Failed to remove profile",
-            "translation": "Error al eliminar el perfil"
+            "id": "Thanks for contacting us",
+            "message": "Thanks for contacting us",
+            "translation": "Gracias por contactarnos"
         }
     ]
 }

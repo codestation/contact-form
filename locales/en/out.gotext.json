@@ -2,13 +2,6 @@
     "language": "en",
     "messages": [
         {
-            "id": "Invalid profile ID",
-            "message": "Invalid profile ID",
-            "translation": "Invalid profile ID",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
             "id": "Failed to read request",
             "message": "Failed to read request",
             "translation": "Failed to read request",
@@ -23,6 +16,34 @@
             "fuzzy": true
         },
         {
+            "id": "Failed to validate captcha, please try again later.",
+            "message": "Failed to validate captcha, please try again later.",
+            "translation": "Failed to validate captcha, please try again later.",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Captcha validation failed",
+            "message": "Captcha validation failed",
+            "translation": "Captcha validation failed",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to save contact",
+            "message": "Failed to save contact",
+            "translation": "Failed to save contact",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to send email",
+            "message": "Failed to send email",
+            "translation": "Failed to send email",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "An error occurred",
             "message": "An error occurred",
             "translation": "An error occurred",
@@ -30,44 +51,26 @@
             "fuzzy": true
         },
         {
-            "id": "Profile not found",
-            "message": "Profile not found",
-            "translation": "Profile not found",
+            "id": "[{AppName}] - New contact",
+            "message": "[{AppName}] - New contact",
+            "translation": "[{AppName}] - New contact",
             "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "AppName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "m.appName"
+                }
+            ],
             "fuzzy": true
         },
         {
-            "id": "Failed to get profile",
-            "message": "Failed to get profile",
-            "translation": "Failed to get profile",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Failed to list profiles",
-            "message": "Failed to list profiles",
-            "translation": "Failed to list profiles",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Failed to save profile",
-            "message": "Failed to save profile",
-            "translation": "Failed to save profile",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Failed to update profile",
-            "message": "Failed to update profile",
-            "translation": "Failed to update profile",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "Failed to remove profile",
-            "message": "Failed to remove profile",
-            "translation": "Failed to remove profile",
+            "id": "Thanks for contacting us",
+            "message": "Thanks for contacting us",
+            "translation": "Thanks for contacting us",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         }
