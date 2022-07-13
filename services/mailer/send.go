@@ -1,11 +1,15 @@
+// Copyright 2022 codestation. All rights reserved.
+// Use of this source code is governed by a MIT-license
+// that can be found in the LICENSE file.
+
 package mailer
 
 import (
 	"bytes"
-	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"golang.org/x/text/language"
 	"html/template"
 	"io"
 	"io/fs"
@@ -17,7 +21,6 @@ import (
 
 	mail "github.com/xhit/go-simple-mail/v2"
 	"golang.org/x/text/message"
-	"megpoid.dev/go/contact-form/app/i18n"
 	"megpoid.dev/go/contact-form/config"
 	"megpoid.dev/go/contact-form/model"
 	"megpoid.dev/go/contact-form/templates"
@@ -31,6 +34,8 @@ type Mailer struct {
 	emailTo          []string
 	replyTo          string
 	appName          string
+	subjectStaff     string
+	subjectClient    string
 }
 
 func NewMailer(cfg *config.Config) *Mailer {
@@ -40,7 +45,7 @@ func NewMailer(cfg *config.Config) *Mailer {
 		emailTo:   cfg.GeneralSettings.EmailTo,
 		replyTo:   cfg.GeneralSettings.ReplyTo,
 	}
-	f := openTemplate("registry.tmpl.html", cfg.GeneralSettings.TemplatesPath)
+	f := openTemplate("registry.tmpl.html", cfg.GeneralSettings.TemplatesPath, cfg.GeneralSettings.DefaultLanguage)
 	defer f.Close()
 
 	data, err := ioutil.ReadAll(f)
@@ -50,7 +55,7 @@ func NewMailer(cfg *config.Config) *Mailer {
 
 	registryTmpl := template.Must(template.New("registry").Parse(string(data)))
 
-	f = openTemplate("client.tmpl.html", cfg.GeneralSettings.TemplatesPath)
+	f = openTemplate("client.tmpl.html", cfg.GeneralSettings.TemplatesPath, cfg.GeneralSettings.DefaultLanguage)
 	defer f.Close()
 
 	data, err = ioutil.ReadAll(f)
@@ -100,6 +105,21 @@ func NewMailer(cfg *config.Config) *Mailer {
 
 	m.smtpServer = server
 
+	var tag language.Tag
+	switch cfg.GeneralSettings.DefaultLanguage {
+	case "es":
+		tag = language.Spanish
+	case "en":
+		tag = language.English
+	default:
+		tag = language.English
+	}
+
+	t := message.NewPrinter(tag)
+
+	m.subjectStaff = t.Sprintf("[%s] - New contact", m.appName)
+	m.subjectClient = t.Sprintf("Thanks for contacting us")
+
 	return m
 }
 
@@ -114,9 +134,7 @@ type templateData struct {
 	Message   string
 }
 
-const templateLang = "es"
-
-func openTemplate(name, templateDir string) io.ReadCloser {
+func openTemplate(name, templateDir, lang string) io.ReadCloser {
 	if templateDir != "" {
 		externalFile, err := os.Open(path.Join(templateDir, name))
 		if err == nil {
@@ -125,7 +143,7 @@ func openTemplate(name, templateDir string) io.ReadCloser {
 		log.Printf("Cannot find external template %s, using built-in", name)
 	}
 
-	fsDir, err := fs.Sub(templates.Assets(), "email/"+templateLang)
+	fsDir, err := fs.Sub(templates.Assets(), "email/"+lang)
 	if err != nil {
 		panic(err)
 	}
@@ -136,7 +154,7 @@ func openTemplate(name, templateDir string) io.ReadCloser {
 	return internalFile
 }
 
-func (m *Mailer) Send(ctx context.Context, contact *model.Contact) error {
+func (m *Mailer) Send(contact *model.Contact) error {
 	if m.emailFrom == "" {
 		return errors.New("no email-from configured")
 	}
@@ -164,10 +182,6 @@ func (m *Mailer) Send(ctx context.Context, contact *model.Contact) error {
 		}
 	}(client)
 
-	t := message.NewPrinter(i18n.GetLanguageTagsContext(ctx))
-
-	subject := t.Sprintf("[%s] - New contact", m.appName)
-
 	// send registry email to staff
 	msg := mail.NewMSG()
 	msg.SetFrom(m.emailFrom)
@@ -179,7 +193,7 @@ func (m *Mailer) Send(ctx context.Context, contact *model.Contact) error {
 		msg.SetReplyTo(m.replyTo)
 	}
 
-	msg.SetSubject(subject)
+	msg.SetSubject(m.subjectStaff)
 
 	var registryDoc bytes.Buffer
 	err = m.registryTemplate.Execute(&registryDoc, data)
@@ -194,13 +208,11 @@ func (m *Mailer) Send(ctx context.Context, contact *model.Contact) error {
 		return fmt.Errorf("failed to send email to staff: %w", err)
 	}
 
-	subject = t.Sprintf("Thanks for contacting us")
-
 	// send client email
 	msg = mail.NewMSG()
 	msg.SetFrom(m.emailFrom)
 	msg.AddTo(contact.Email)
-	msg.SetSubject(subject)
+	msg.SetSubject(m.subjectClient)
 
 	var clientDoc bytes.Buffer
 	err = m.clientTemplate.Execute(&clientDoc, data)

@@ -19,6 +19,7 @@ const (
 	DefaultWriteTimeout  = 1 * time.Minute
 	DefaultIdleTimeout   = 1 * time.Minute
 	DefaultBodyLimit     = "10MB"
+	DefaultLanguage      = "en"
 
 	DefaultDriverName      = "postgres"
 	DefaultDataSourceName  = "postgres://contactform:secret@localhost/contactform?sslmode=disable"
@@ -129,11 +130,18 @@ type GeneralSettings struct {
 	ReplyTo          string   `validate:"email" mapstructure:"reply-to"`
 	AppName          string   `mapstructure:"app-name"`
 	TemplatesPath    string   `mapstructure:"templates-path"`
+	DefaultLanguage  string   `mapstructure:"lang"`
 }
 
 func (cfg *GeneralSettings) SetDefaults() {
 	if len(cfg.CorsAllowOrigins) == 0 {
 		cfg.CorsAllowOrigins = append(cfg.CorsAllowOrigins, "*")
+	}
+	if cfg.DefaultLanguage == "" {
+		cfg.DefaultLanguage = "en"
+	}
+	if cfg.AppName == "" {
+		cfg.AppName = "App"
 	}
 }
 
@@ -143,6 +151,9 @@ func (cfg *GeneralSettings) Validate() error {
 	}
 	if len(cfg.JwtSecret) > 0 && len(cfg.JwtSecret) < 32 {
 		return errors.New("GeneralSettings: jwt secret must have at least 32 bytes")
+	}
+	if cfg.DefaultLanguage != "en" && cfg.DefaultLanguage != "es" {
+		return errors.New("GeneralSettings: invalid default language")
 	}
 	return nil
 }

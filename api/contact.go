@@ -28,10 +28,12 @@ func (api *API) SaveContact(c echo.Context) error {
 		return app.NewAppError(t.Sprintf("The request did not pass validation"), err)
 	}
 
-	result, err := api.app.SaveContact(c.Request().Context(), &request)
+	_, err := api.app.SaveContact(c.Request().Context(), &request)
 	if err != nil {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, map[string]string{
+		"status": "ok",
+	})
 }

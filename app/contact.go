@@ -36,7 +36,7 @@ func (a *App) SaveContact(ctx context.Context, req *model.ContactRequest) (*mode
 	}
 
 	mail := mailer.NewMailer(a.Config())
-	err = mail.Send(ctx, contact)
+	err = mail.Send(contact)
 	if err != nil {
 		return nil, NewAppError(t.Sprintf("Failed to send email"), err)
 	}

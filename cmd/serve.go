@@ -99,6 +99,7 @@ func init() {
 	serveCmd.Flags().String("reply-to", "", "Add Reply-To to email")
 	serveCmd.Flags().String("email-from", "", "Email from")
 	serveCmd.Flags().String("app-name", "", "Application name")
+	serveCmd.Flags().String("lang", config.DefaultLanguage, "Application default language")
 	serveCmd.Flags().String("templates-path", "", "Templates path")
 	serveCmd.Flags().String("captcha-secret", "", "Captcha secret")
 	serveCmd.Flags().String("captcha-service", config.DefaultCaptchaService, "Captcha service")

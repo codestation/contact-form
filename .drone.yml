@@ -62,7 +62,7 @@ steps:
     settings:
       urls: http://updater:8000/apis/swarm/v1/update
       token_value:
-        from_secret: updater_appkey
+        from_secret: updater_apikey
       template: |
         {
           "images": [

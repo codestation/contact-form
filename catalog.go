@@ -39,40 +39,40 @@ func init() {
 }
 
 var messageKeyToIndex = map[string]int{
-	"An error occurred":                   3,
-	"Failed to get profile":               5,
-	"Failed to list profiles":             6,
-	"Failed to read request":              1,
-	"Failed to remove profile":            9,
-	"Failed to save profile":              7,
-	"Failed to update profile":            8,
-	"Invalid profile ID":                  0,
-	"Profile not found":                   4,
-	"The request did not pass validation": 2,
+	"An error occurred":                                   6,
+	"Captcha validation failed":                           3,
+	"Failed to read request":                              0,
+	"Failed to save contact":                              4,
+	"Failed to send email":                                5,
+	"Failed to validate captcha, please try again later.": 2,
+	"Thanks for contacting us":                            8,
+	"The request did not pass validation":                 1,
+	"[%s] - New contact":                                  7,
 }
 
-var enIndex = []uint32{ // 11 elements
-	0x00000000, 0x00000013, 0x0000002a, 0x0000004e,
-	0x00000060, 0x00000072, 0x00000088, 0x000000a0,
-	0x000000b7, 0x000000d0, 0x000000e9,
-} // Size: 68 bytes
+var enIndex = []uint32{ // 10 elements
+	0x00000000, 0x00000017, 0x0000003b, 0x0000006f,
+	0x00000089, 0x000000a0, 0x000000b5, 0x000000c7,
+	0x000000dd, 0x000000f6,
+} // Size: 64 bytes
 
-const enData string = "" + // Size: 233 bytes
-	"\x02Invalid profile ID\x02Failed to read request\x02The request did not " +
-	"pass validation\x02An error occurred\x02Profile not found\x02Failed to g" +
-	"et profile\x02Failed to list profiles\x02Failed to save profile\x02Faile" +
-	"d to update profile\x02Failed to remove profile"
+const enData string = "" + // Size: 246 bytes
+	"\x02Failed to read request\x02The request did not pass validation\x02Fai" +
+	"led to validate captcha, please try again later.\x02Captcha validation f" +
+	"ailed\x02Failed to save contact\x02Failed to send email\x02An error occu" +
+	"rred\x02[%[1]s] - New contact\x02Thanks for contacting us"
 
-var esIndex = []uint32{ // 11 elements
-	0x00000000, 0x00000017, 0x00000032, 0x00000057,
-	0x0000006c, 0x00000081, 0x00000099, 0x000000b2,
-	0x000000cd, 0x000000eb, 0x00000107,
-} // Size: 68 bytes
+var esIndex = []uint32{ // 10 elements
+	0x00000000, 0x0000001b, 0x00000040, 0x0000007a,
+	0x0000009f, 0x000000bb, 0x000000d5, 0x000000ea,
+	0x00000103, 0x0000011c,
+} // Size: 64 bytes
 
-const esData string = "" + // Size: 263 bytes
-	"\x02ID de perfil inválido\x02Error al leer la petición\x02La petición no" +
-	" pasó la validación\x02Ha ocurrido un error\x02Perfil no encontrado\x02E" +
-	"rror al obtener perfil\x02Error al listar perfiles\x02Error al guardar e" +
-	"l perfil\x02Error al actualizar el perfil\x02Error al eliminar el perfil"
+const esData string = "" + // Size: 284 bytes
+	"\x02Error al leer la petición\x02La petición no pasó la validación\x02Er" +
+	"ror al validar el captcha, por favor intente mas tarde.\x02La validación" +
+	" de captcha ha fallado\x02Error al salvar el contacto\x02Error al enviar" +
+	" el correo\x02Ha ocurrido un error\x02[%[1]s] - Nuevo contacto\x02Gracia" +
+	"s por contactarnos"
 
-	// Total table size 632 bytes (0KiB); checksum: 79946FF9
+	// Total table size 658 bytes (0KiB); checksum: 1E7868C3
