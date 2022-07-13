@@ -7,11 +7,11 @@ package sqlstore
 import (
 	"context"
 	"database/sql"
-	"megpoid.xyz/go/go-skel/config"
+	"megpoid.dev/go/contact-form/config"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"megpoid.xyz/go/go-skel/store"
+	"megpoid.dev/go/contact-form/store"
 )
 
 type FakeDbConn struct{}

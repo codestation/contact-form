@@ -4,6 +4,6 @@
 
 package paginator
 
-import "megpoid.xyz/go/go-skel/store/paginator/cursor"
+import "megpoid.dev/go/contact-form/store/paginator/cursor"
 
 type Cursor = cursor.Cursor

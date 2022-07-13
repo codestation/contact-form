@@ -7,7 +7,7 @@ package cursor
 import (
 	"encoding/base64"
 	"encoding/json"
-	"megpoid.xyz/go/go-skel/store/paginator/util"
+	"megpoid.dev/go/contact-form/store/paginator/util"
 	"reflect"
 )
 

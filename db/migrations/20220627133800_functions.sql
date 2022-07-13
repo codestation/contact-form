@@ -3,7 +3,7 @@
 create or replace function notify_event() returns trigger as $$
 begin
     if (tg_op = 'INSERT') then
-        perform pg_notify('goapp.newtask', row_to_json(NEW)::text);
+        perform pg_notify('contactform.newtask', row_to_json(NEW)::text);
     end if;
 
     return null;

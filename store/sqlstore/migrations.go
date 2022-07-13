@@ -10,8 +10,8 @@ import (
 	"fmt"
 	migrate "github.com/rubenv/sql-migrate"
 	"log"
-	"megpoid.xyz/go/go-skel/config"
-	"megpoid.xyz/go/go-skel/db"
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/db"
 	"path"
 	"strings"
 )

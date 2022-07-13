@@ -6,10 +6,11 @@ package api
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/labstack/echo/v4"
 	"go.uber.org/multierr"
-	"megpoid.xyz/go/go-skel/model/request"
-	"strings"
+	"megpoid.dev/go/contact-form/model/request"
 )
 
 func NewFilter(c echo.Context) (*request.QueryParams, error) {

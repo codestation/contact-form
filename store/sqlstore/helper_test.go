@@ -8,8 +8,8 @@ import (
 	"context"
 	"database/sql"
 	"github.com/stretchr/testify/assert"
-	"megpoid.xyz/go/go-skel/config"
-	"megpoid.xyz/go/go-skel/testdata"
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/testdata"
 	"os"
 	"testing"
 )

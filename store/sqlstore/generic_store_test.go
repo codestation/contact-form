@@ -9,21 +9,26 @@ import (
 	"errors"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/suite"
-	"megpoid.xyz/go/go-skel/model"
-	"megpoid.xyz/go/go-skel/store"
-	"megpoid.xyz/go/go-skel/store/clause"
+	"megpoid.dev/go/contact-form/model"
+	"megpoid.dev/go/contact-form/store"
+	"megpoid.dev/go/contact-form/store/clause"
 	"testing"
 	"time"
 )
+
+type testProfile struct {
+	model.Model
+	Avatar string
+}
 
 type testUser struct {
 	model.Model
 	Name      string
 	ProfileID model.ID `goqu:"skipupdate"`
-	Profile   *model.Profile
+	Profile   *testProfile
 }
 
-func (t *testUser) AttachProfile(p *model.Profile) {
+func (t *testUser) AttachProfile(p *testProfile) {
 	t.ProfileID = 0
 	t.Profile = p
 }
@@ -39,6 +44,11 @@ func newUser(name string, profileId model.ID) *testUser {
 
 type userStore struct {
 	*genericStore[*testUser]
+	profile *profileStore
+}
+
+type profileStore struct {
+	*genericStore[*testProfile]
 }
 
 func (s *userStore) Attach(ctx context.Context, results []*testUser, relation string) error {
@@ -47,8 +57,8 @@ func (s *userStore) Attach(ctx context.Context, results []*testUser, relation st
 	case "profile":
 		err = attachRelation(ctx, results,
 			func(m *testUser) model.ID { return m.ProfileID },
-			func(m *testUser, r *model.Profile) { m.AttachProfile(r) },
-			s.Profile().ListByIds)
+			func(m *testUser, r *testProfile) { m.AttachProfile(r) },
+			s.profile.ListByIds)
 	}
 	return err
 }
@@ -73,8 +83,8 @@ func (s *storeSuite) TearDownTest() {
 }
 
 func (s *storeSuite) TestNewStore() {
-	st := NewStore[*model.Profile](s.conn.store)
-	s.Equal("profiles", st.table)
+	st := NewStore[*testUser](s.conn.store)
+	s.Equal("test_users", st.table)
 	s.Equal([]any{"*"}, st.selectFields)
 }
 
@@ -265,6 +275,10 @@ func (s *storeSuite) TestIncludes() {
 		genericStore: NewStore[*testUser](s.conn.store,
 			WithIncludes[*testUser]([]string{"profile"}),
 		),
+	}
+
+	st.profile = &profileStore{
+		genericStore: NewStore[*testProfile](s.conn.store),
 	}
 
 	st.AttachFunc(st.Attach)

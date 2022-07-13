@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"megpoid.xyz/go/go-skel/config"
+	"megpoid.dev/go/contact-form/config"
 	"time"
 
 	"github.com/doug-martin/goqu/v9"

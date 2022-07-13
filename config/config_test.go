@@ -36,5 +36,5 @@ func TestConfig_Validate_InvalidJwt(t *testing.T) {
 func TestConfig_Validate_NoDefaults(t *testing.T) {
 	cfg := &Config{}
 	err := cfg.Validate()
-	assert.NoError(t, err)
+	assert.Error(t, err)
 }

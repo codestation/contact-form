@@ -33,13 +33,13 @@ steps:
   - name: build
     image: ghcr.io/codestation/drone-docker
     settings:
-      repo: registry.megpoid.xyz/codestation/goapp
+      repo: registry.megpoid.dev/codestation/contact-form
       tags: latest
       buildkit: true
       platforms:
         - linux/amd64
         - linux/arm64
-      registry: registry.megpoid.xyz
+      registry: registry.megpoid.dev
       username:
         from_secret: docker_username
       password:
@@ -66,7 +66,7 @@ steps:
       template: |
         {
           "images": [
-            "registry.megpoid.xyz/codestation/goapp"
+            "registry.megpoid.dev/codestation/contact-form"
           ]
         }
 

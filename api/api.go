@@ -6,10 +6,10 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
-	"megpoid.xyz/go/go-skel/app"
+	"megpoid.dev/go/contact-form/app"
 )
 
-const appName = "goapp"
+const appName = "forms"
 const apiVersion = "v1"
 
 type API struct {
@@ -26,7 +26,7 @@ func Init(srv *app.Server) (*API, error) {
 
 	// initialize all handlers
 	api.InitStatus()
-	api.InitProfile()
+	api.InitContact()
 
 	return api, nil
 }

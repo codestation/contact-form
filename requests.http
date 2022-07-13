@@ -1,5 +1,10 @@
 ###
-GET {{host}}/apis/goapp/v1/profiles
+POST {{host}}/apis/forms/v1/contacts
+Content-Type: application/json
 
-###
-GET {{host}}/apis/goapp/v1/profiles/8
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john@example.com",
+  "message": "Hello world!"
+}

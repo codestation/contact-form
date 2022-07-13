@@ -6,7 +6,7 @@ package cmd
 
 import (
 	"fmt"
-	"megpoid.xyz/go/go-skel/version"
+	"megpoid.dev/go/contact-form/version"
 
 	"github.com/spf13/cobra"
 )

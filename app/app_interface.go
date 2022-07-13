@@ -6,18 +6,12 @@ package app
 
 import (
 	"context"
-	"megpoid.xyz/go/go-skel/config"
-	"megpoid.xyz/go/go-skel/model"
-	"megpoid.xyz/go/go-skel/model/request"
-	"megpoid.xyz/go/go-skel/model/response"
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/model"
 )
 
 type IApp interface {
-	GetProfile(ctx context.Context, id model.ID) (*model.Profile, error)
-	ListProfiles(ctx context.Context, query *request.QueryParams) (*response.ListResponse[*model.Profile], error)
-	SaveProfile(ctx context.Context, req *model.ProfileRequest) (*model.Profile, error)
-	UpdateProfile(ctx context.Context, req *model.ProfileRequest) (*model.Profile, error)
-	RemoveProfile(ctx context.Context, id model.ID) error
+	SaveContact(ctx context.Context, req *model.ContactRequest) (*model.Contact, error)
 	HealthCheck(ctx context.Context) *model.HealthCheckResult
 	Srv() *Server
 	Config() *config.Config

@@ -13,8 +13,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/text/message"
-	"megpoid.xyz/go/go-skel/app/i18n"
-	"megpoid.xyz/go/go-skel/store"
+	"megpoid.dev/go/contact-form/app/i18n"
+	"megpoid.dev/go/contact-form/store"
 )
 
 type ValidationError struct {

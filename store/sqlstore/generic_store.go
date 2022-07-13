@@ -11,12 +11,12 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/gofrs/uuid"
-	"megpoid.xyz/go/go-skel/model"
-	"megpoid.xyz/go/go-skel/model/response"
-	"megpoid.xyz/go/go-skel/store"
-	"megpoid.xyz/go/go-skel/store/clause"
-	"megpoid.xyz/go/go-skel/store/filter"
-	"megpoid.xyz/go/go-skel/store/paginator"
+	"megpoid.dev/go/contact-form/model"
+	"megpoid.dev/go/contact-form/model/response"
+	"megpoid.dev/go/contact-form/store"
+	"megpoid.dev/go/contact-form/store/clause"
+	"megpoid.dev/go/contact-form/store/filter"
+	"megpoid.dev/go/contact-form/store/paginator"
 	"reflect"
 )
 

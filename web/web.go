@@ -6,7 +6,7 @@ package web
 
 import (
 	"github.com/labstack/echo/v4"
-	"megpoid.xyz/go/go-skel/app"
+	"megpoid.dev/go/contact-form/app"
 )
 
 type Web struct {

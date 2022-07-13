@@ -1,4 +1,4 @@
-module megpoid.xyz/go/go-skel
+module megpoid.dev/go/contact-form
 
 go 1.18
 
@@ -11,6 +11,7 @@ require (
 	github.com/jackc/pgconn v1.12.1
 	github.com/jackc/pgtype v1.11.0
 	github.com/jackc/pgx/v4 v4.16.1
+	github.com/jinzhu/copier v0.3.5
 	github.com/jinzhu/inflection v1.0.0
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/mitchellh/mapstructure v1.5.0
@@ -19,6 +20,7 @@ require (
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
 	github.com/stretchr/testify v1.7.2
+	github.com/xhit/go-simple-mail/v2 v2.11.0
 	go.uber.org/multierr v1.8.0
 	golang.org/x/text v0.3.7
 )
@@ -29,6 +31,7 @@ require (
 	github.com/go-gorp/gorp/v3 v3.0.2 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
+	github.com/go-test/deep v1.0.8 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
@@ -53,6 +56,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.0 // indirect
+	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect

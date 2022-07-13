@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>New record - {{.AppName}}</title>
+</head>
+<body>
+<p>A new record has been generated from the {{.AppName}} website</p>
+<div>
+    <p>First name: {{ .FirstName }}</p>
+</div>
+<div>
+    <p>Last name: {{ .LastName }}</p>
+</div>
+<div>
+    <p>Email: {{ .Email }}</p>
+</div>
+{{ if .Phone }}
+<div>
+    <p>Phone: {{ .Phone }}</p>
+</div>
+{{ end }}
+{{ if .Company }}
+<div>
+    <p>Company: {{ .Company }}</p>
+</div>
+{{ end }}
+{{if .Subject }}
+<div>
+    <p>Subject: {{ .Subject }}</p>
+</div>
+{{end}}
+<div>
+    <p>Message: {{ .Message }}</p>
+</div>
+</body>
+</html>

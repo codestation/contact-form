@@ -10,21 +10,21 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"megpoid.xyz/go/go-skel/store"
+	"megpoid.dev/go/contact-form/store"
 )
 
 type fakeStore struct {
 	HealthCheckError error
 }
 
+func (s fakeStore) Contact() store.ContactStore {
+	panic("not implemented")
+}
+
 func (s fakeStore) HealthCheck() store.HealthCheckStore {
 	return &fakeHealthCheckStore{
 		Error: s.HealthCheckError,
 	}
-}
-
-func (s fakeStore) Profile() store.ProfileStore {
-	panic("not implemented")
 }
 
 func (s fakeStore) WithTransaction(_ context.Context, _ func(s store.Store) error) error {

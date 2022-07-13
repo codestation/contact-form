@@ -5,7 +5,7 @@
 package app
 
 import (
-	"megpoid.xyz/go/go-skel/config"
+	"megpoid.dev/go/contact-form/config"
 	"time"
 )
 

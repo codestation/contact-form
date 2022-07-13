@@ -11,14 +11,14 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/georgysavva/scany/dbscan"
-	"megpoid.xyz/go/go-skel/config"
-	"megpoid.xyz/go/go-skel/store"
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/store"
 )
 
 type Stores struct {
 	healthCheck store.HealthCheckStore
 	// define more stores here
-	profile store.ProfileStore
+	contact store.ContactStore
 }
 
 type SqlStore struct {
@@ -35,7 +35,7 @@ func (ss *SqlStore) initialize() {
 	goqu.SetColumnRenameFunction(dbscan.SnakeCaseMapper)
 	// Create all the stores here
 	ss.stores.healthCheck = newSqlHealthCheckStore(ss)
-	ss.stores.profile = newSqlProfileStore(ss)
+	ss.stores.contact = newSqlContactStore(ss)
 }
 
 func New(conn SqlDb, settings config.SqlSettings) *SqlStore {
@@ -56,8 +56,8 @@ func (ss *SqlStore) HealthCheck() store.HealthCheckStore {
 	return ss.stores.healthCheck
 }
 
-func (ss *SqlStore) Profile() store.ProfileStore {
-	return ss.stores.profile
+func (ss *SqlStore) Contact() store.ContactStore {
+	return ss.stores.contact
 }
 
 func (ss *SqlStore) Close() {}

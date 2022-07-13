@@ -6,7 +6,7 @@ package sqlstore
 
 import (
 	"context"
-	"megpoid.xyz/go/go-skel/model"
+	"megpoid.dev/go/contact-form/model"
 )
 
 func attachRelation[T, U model.Modelable](

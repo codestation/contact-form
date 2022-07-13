@@ -7,15 +7,15 @@ package store
 import (
 	"context"
 	"github.com/gofrs/uuid"
-	"megpoid.xyz/go/go-skel/model"
-	"megpoid.xyz/go/go-skel/model/response"
-	"megpoid.xyz/go/go-skel/store/clause"
+	"megpoid.dev/go/contact-form/model"
+	"megpoid.dev/go/contact-form/model/response"
+	"megpoid.dev/go/contact-form/store/clause"
 )
 
 // Store lists all the other stores
 type Store interface {
 	HealthCheck() HealthCheckStore
-	Profile() ProfileStore
+	Contact() ContactStore
 	WithTransaction(ctx context.Context, f func(s Store) error) error
 }
 
@@ -36,7 +36,6 @@ type HealthCheckStore interface {
 	HealthCheck(ctx context.Context) error
 }
 
-type ProfileStore interface {
-	GenericStore[*model.Profile]
-	GetByUserToken(ctx context.Context, userToken string) (*model.Profile, error)
+type ContactStore interface {
+	GenericStore[*model.Contact]
 }

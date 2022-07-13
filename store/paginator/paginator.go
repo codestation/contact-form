@@ -13,7 +13,7 @@ import (
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/georgysavva/scany/dbscan"
-	"megpoid.xyz/go/go-skel/store/paginator/cursor"
+	"megpoid.dev/go/contact-form/store/paginator/cursor"
 	"reflect"
 )
 

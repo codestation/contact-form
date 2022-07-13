@@ -2,14 +2,13 @@
 // Use of this source code is governed by a MIT-license
 // that can be found in the LICENSE file.
 
-//go:generate gotext -srclang=en update -out=catalog.go -lang=en,es
+package templates
 
-package main
+import "embed"
 
-import (
-	"megpoid.dev/go/contact-form/cmd"
-)
+//go:embed email
+var assets embed.FS
 
-func main() {
-	cmd.Execute()
+func Assets() embed.FS {
+	return assets
 }

@@ -8,10 +8,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"megpoid.xyz/go/go-skel/api"
-	"megpoid.xyz/go/go-skel/app"
-	"megpoid.xyz/go/go-skel/config"
-	"megpoid.xyz/go/go-skel/web"
+	"megpoid.dev/go/contact-form/api"
+	"megpoid.dev/go/contact-form/app"
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/web"
 	"os"
 	"os/signal"
 	"syscall"
@@ -88,6 +88,20 @@ func init() {
 	serveCmd.Flags().Int("max-open-conns", config.DefaultMaxOpenConns, "Max open connections")
 	serveCmd.Flags().Int("max-idle-conns", config.DefaultMaxIdleConns, "Max idle connections")
 	serveCmd.Flags().String("body-limit", "", "Max body size for http requests")
+	serveCmd.Flags().String("smtp-username", "", "SMTP Username")
+	serveCmd.Flags().String("smtp-password", "", "SMTP Password")
+	serveCmd.Flags().String("smtp-host", config.DefaultSmtpHost, "SMTP Host")
+	serveCmd.Flags().Int("smtp-port", config.DefaultSmtpPort, "SMTP Port")
+	serveCmd.Flags().String("smtp-encryption", config.DefaultSmtpEncryption, "SMTP encryption type")
+	serveCmd.Flags().String("smtp-auth", config.DefaultSmtpAuth, "SMTP auth type")
+	serveCmd.Flags().Bool("smtp-skip-verify", false, "Skip SMTP TLS verification")
+	serveCmd.Flags().StringSlice("email-to", nil, "Default staff emails")
+	serveCmd.Flags().String("reply-to", "", "Add Reply-To to email")
+	serveCmd.Flags().String("email-from", "", "Email from")
+	serveCmd.Flags().String("app-name", "", "Application name")
+	serveCmd.Flags().String("templates-path", "", "Templates path")
+	serveCmd.Flags().String("captcha-secret", "", "Captcha secret")
+	serveCmd.Flags().String("captcha-service", config.DefaultCaptchaService, "Captcha service")
 	serveCmd.Flags().StringSlice("cors-allow-origin", []string{}, "CORS Allowed origins")
 	err := viper.BindPFlags(serveCmd.Flags())
 	cobra.CheckErr(err)

@@ -17,14 +17,10 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "goapp",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-GoApp is a CLI library for Go that empowers applications.
-This application is a samble to be used as a base
-to quickly create an application.`,
+	Use:   "contact-form",
+	Short: "Microservice for handling of contact forms",
+	Long: `This service saves the contact in a database and notifies by email
+to the people that should handle the contact.`,
 	SilenceUsage: true,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
@@ -66,10 +62,10 @@ func initConfig() {
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
-		// Search config in home directory with name ".goapp" (without extension).
+		// Search config in home directory with name ".contact-form" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
-		viper.SetConfigName(".goapp")
+		viper.SetConfigName(".contact-form")
 	}
 
 	viper.SetEnvPrefix("app")
