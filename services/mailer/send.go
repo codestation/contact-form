@@ -40,7 +40,7 @@ type Mailer struct {
 
 func NewMailer(cfg *config.Config) *Mailer {
 	m := &Mailer{
-		appName:   cfg.GeneralSettings.AppName,
+		appName:   cfg.GeneralSettings.SenderName,
 		emailFrom: cfg.SmtpSettings.EmailFrom,
 		emailTo:   cfg.GeneralSettings.EmailTo,
 		replyTo:   cfg.GeneralSettings.ReplyTo,

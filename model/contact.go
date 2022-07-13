@@ -13,6 +13,7 @@ type Contact struct {
 	Company   string `json:"company,omitempty"`
 	Subject   string `json:"subject,omitempty"`
 	Message   string `json:"message"`
+	Tag       string `json:"tag"`
 }
 
 func NewContact(opts ...Option) *Contact {
@@ -33,7 +34,7 @@ type ContactRequest struct {
 	CaptchaResponse string `json:"captcha_response,omitempty"`
 }
 
-func (p *ContactRequest) Contact(opts ...Option) *Contact {
+func (p *ContactRequest) Contact(tag string, opts ...Option) *Contact {
 	c := NewContact(opts...)
 	c.FirstName = p.FirstName
 	c.LastName = p.LastName
@@ -42,6 +43,7 @@ func (p *ContactRequest) Contact(opts ...Option) *Contact {
 	c.Phone = p.Phone
 	c.Company = p.Company
 	c.Subject = p.Subject
+	c.Tag = tag
 
 	return c
 }

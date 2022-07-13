@@ -29,7 +29,7 @@ func (a *App) SaveContact(ctx context.Context, req *model.ContactRequest) (*mode
 		}
 	}
 
-	contact := req.Contact()
+	contact := req.Contact(a.Config().GeneralSettings.ContactTag)
 	err := a.Srv().Store.Contact().Save(ctx, contact)
 	if err != nil {
 		return nil, NewAppError(t.Sprintf("Failed to save contact"), err)

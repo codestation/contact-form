@@ -128,7 +128,8 @@ type GeneralSettings struct {
 	CorsAllowOrigins []string `mapstructure:"cors-allow-origin"`
 	EmailTo          []string `validate:"gt=0,dive,required"  mapstructure:"email-to"`
 	ReplyTo          string   `validate:"email" mapstructure:"reply-to"`
-	AppName          string   `mapstructure:"app-name"`
+	ContactTag       string   `mapstructure:"contact-tag"`
+	SenderName       string   `mapstructure:"sender-name"`
 	TemplatesPath    string   `mapstructure:"templates-path"`
 	DefaultLanguage  string   `mapstructure:"lang"`
 }
@@ -140,8 +141,11 @@ func (cfg *GeneralSettings) SetDefaults() {
 	if cfg.DefaultLanguage == "" {
 		cfg.DefaultLanguage = "en"
 	}
-	if cfg.AppName == "" {
-		cfg.AppName = "App"
+	if cfg.ContactTag == "" {
+		cfg.ContactTag = "app"
+	}
+	if cfg.SenderName == "" {
+		cfg.SenderName = "App"
 	}
 }
 
