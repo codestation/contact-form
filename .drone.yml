@@ -9,9 +9,12 @@ platform:
 
 steps:
   - name: lint
-    image: golangci/golangci-lint:v1.46.2
+    image: golangci/golangci-lint:v1.47.1
     commands:
       - golangci-lint run --no-config -v --timeout 10m ./...
+    environment:
+      GOPROXY:
+        from_secret: goproxy_url
 
   - name: postgres-healthcheck
     image: postgres:14
@@ -36,9 +39,6 @@ steps:
       repo: registry.megpoid.dev/codestation/contact-form
       tags: latest
       buildkit: true
-      platforms:
-        - linux/amd64
-        - linux/arm64
       registry: registry.megpoid.dev
       username:
         from_secret: docker_username
