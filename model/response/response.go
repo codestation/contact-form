@@ -5,22 +5,43 @@
 package response
 
 import (
+	"math"
 	"megpoid.dev/go/contact-form/model"
-	"megpoid.dev/go/contact-form/store/paginator/cursor"
+	"megpoid.dev/go/contact-form/store/paginator"
 )
 
 type ListResponse[T model.Modelable] struct {
-	Data []T        `json:"data"`
-	Meta Pagination `json:"meta"`
+	Data []T  `json:"data"`
+	Meta Meta `json:"meta,omitempty"`
 }
 
-func NewListResponse[T model.Modelable](results []T, c *cursor.Cursor) *ListResponse[T] {
-	return &ListResponse[T]{
-		Data: results,
-		Meta: Pagination{
-			Items:      len(results),
-			NextCursor: c.After,
-			PrevCursor: c.Before,
-		},
+func NewListResponse[T model.Modelable](results []T, c *paginator.Cursor) *ListResponse[T] {
+	switch c.Type() {
+	case paginator.MetaCursor:
+		cur := c.Cursor()
+		return &ListResponse[T]{
+			Data: results,
+			Meta: Meta{
+				Items:      len(results),
+				NextCursor: cur.After,
+				PrevCursor: cur.Before,
+			},
+		}
+	case paginator.MetaOffset:
+		off := c.Offset()
+		return &ListResponse[T]{
+			Data: results,
+			Meta: Meta{
+				Items:          len(results),
+				TotalRecords:   model.NewType(off.Total),
+				CurrentPage:    model.NewType(off.Page),
+				MaxPage:        model.NewType(int(math.Ceil(float64(off.Total) / float64(off.ItemsPerPage)))),
+				RecordsPerPage: model.NewType(off.ItemsPerPage),
+			},
+		}
+	default:
+		return &ListResponse[T]{
+			Data: results,
+		}
 	}
 }

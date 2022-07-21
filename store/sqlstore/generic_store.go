@@ -29,29 +29,22 @@ type AttachFunc[T model.Modelable] func(ctx context.Context, results []T, includ
 
 type genericStore[T model.Modelable] struct {
 	*SqlStore
-	table           string
-	paginatorConfig paginator.Config
-	filterConfig    filter.Config
-	listField       string
-	selectFields    []any
-	defaultFilters  exp.ExpressionList
-	sortKeys        []string
-	includes        []string
-	rules           []filter.Rule
-	attachFunc      AttachFunc[T]
+	table          string
+	listField      string
+	selectFields   []any
+	defaultFilters exp.ExpressionList
+	sortKeys       []string
+	includes       []string
+	rules          []filter.Rule
+	options        []paginator.Option
+	attachFunc     AttachFunc[T]
 }
 
 type StoreOption[T model.Modelable] func(c *genericStore[T])
 
-func WithPaginatorConfig[T model.Modelable](cfg paginator.Config) StoreOption[T] {
+func WithPaginatorOptions[T model.Modelable](opts ...paginator.Option) StoreOption[T] {
 	return func(c *genericStore[T]) {
-		c.paginatorConfig = cfg
-	}
-}
-
-func WithFilterConfig[T model.Modelable](cfg filter.Config) StoreOption[T] {
-	return func(c *genericStore[T]) {
-		c.filterConfig = cfg
+		c.options = opts
 	}
 }
 
@@ -67,13 +60,19 @@ func WithExpressions[T model.Modelable](filters exp.ExpressionList) StoreOption[
 	}
 }
 
+func WithSortKeys[T model.Modelable](keys ...string) StoreOption[T] {
+	return func(c *genericStore[T]) {
+		c.sortKeys = keys
+	}
+}
+
 func WithFilters[T model.Modelable](rules ...filter.Rule) StoreOption[T] {
 	return func(c *genericStore[T]) {
 		c.rules = rules
 	}
 }
 
-func WithIncludes[T model.Modelable](includes []string) StoreOption[T] {
+func WithIncludes[T model.Modelable](includes ...string) StoreOption[T] {
 	return func(c *genericStore[T]) {
 		c.includes = includes
 	}
@@ -165,6 +164,7 @@ func (s *genericStore[T]) List(ctx context.Context, opts ...clause.FilterOption)
 	}
 
 	cl := clause.NewClause(
+		clause.WithConfig(s.options),
 		clause.WithPaginatorKeys(s.sortKeys),
 		clause.WithAllowedIncludes(s.includes),
 		clause.WithAllowedFilters(s.rules),
@@ -345,6 +345,37 @@ func (s *genericStore[T]) DeleteByExternalId(ctx context.Context, externalId uui
 
 	if n != 1 {
 		return store.NewRepoError(store.ErrNotFound, nil)
+	}
+
+	return nil
+}
+
+func (s *genericStore[T]) Each(ctx context.Context, fn func(entry T) error, opts ...clause.FilterOption) error {
+	filters := make([]clause.FilterOption, 0, len(opts))
+	copy(filters, opts)
+
+	for {
+		resp, err := s.List(ctx, filters...)
+		if err != nil {
+			return err
+		}
+
+		for _, entry := range resp.Data {
+			if err = fn(entry); err != nil {
+				return err
+			}
+		}
+
+		if resp.Meta.Next() {
+			if resp.Meta.CurrentPage != nil {
+				*resp.Meta.CurrentPage += 1
+			}
+			filters = filters[:0] // clear slice, keep capacity
+			filters = append(filters, clause.WithMeta(resp.Meta))
+			filters = append(filters, opts...)
+		} else {
+			break
+		}
 	}
 
 	return nil

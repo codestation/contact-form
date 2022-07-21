@@ -18,50 +18,78 @@ type User struct {
 	Name string
 }
 
+type sqlSelector struct {
+	Error        error
+	AssertSelect func(dest any, query string, args ...any) error
+	AssertGet    func(dest any, query string, args ...any) error
+}
+
+func (s *sqlSelector) Get(_ context.Context, dest any, query string, args ...any) error {
+	if s.Error != nil {
+		return s.Error
+	}
+	if s.AssertGet == nil {
+		return nil
+	}
+	return s.AssertGet(dest, query, args...)
+}
+
+func (s *sqlSelector) Select(_ context.Context, dest any, query string, args ...any) error {
+	if s.Error != nil {
+		return s.Error
+	}
+	if s.AssertSelect == nil {
+		return nil
+	}
+	return s.AssertSelect(dest, query, args...)
+}
+
 func TestPaginatorDefault(t *testing.T) {
-	p := New()
+	paginator := New()
 	query := goqu.Dialect("postgres").From("users").Select("id", "name")
-	query, err := p.PaginateDataset(query, &User{})
-	if assert.NoError(t, err) {
-		sql, args, err := query.Prepared(true).ToSQL()
-		if assert.NoError(t, err) {
-			assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "id" ASC LIMIT $1`, sql)
-			assert.Equal(t, []any{int64(100 + 1)}, args)
-		}
-	}
+	db := sqlSelector{AssertSelect: func(dest any, query string, args ...any) error {
+		assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "id" ASC LIMIT $1`, query)
+		assert.Equal(t, []any{int64(DefaultPaginatorLimit + 1)}, args)
+		return nil
+	}}
+
+	results := make([]*User, 0)
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
+	assert.NoError(t, err)
+	assert.Equal(t, MetaCursor, meta.Type())
 }
 
-func TestPaginatorMultiple(t *testing.T) {
-	p := New(&Config{
-		Keys: []string{"Name", "ID"},
-	})
+func TestPaginatorMultipleKeys(t *testing.T) {
+	paginator := New(WithKeys("Name", "ID"))
 	query := goqu.Dialect("postgres").From("users").Select("id", "name")
-	query, err := p.PaginateDataset(query, &User{})
-	if assert.NoError(t, err) {
-		sql, args, err := query.Prepared(true).ToSQL()
-		if assert.NoError(t, err) {
-			assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "id" ASC LIMIT $1`, sql)
-			assert.Equal(t, []any{int64(100 + 1)}, args)
-		}
-	}
+	db := sqlSelector{AssertSelect: func(dest any, query string, args ...any) error {
+		assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "id" ASC LIMIT $1`, query)
+		assert.Equal(t, []any{int64(DefaultPaginatorLimit + 1)}, args)
+		return nil
+	}}
+
+	results := make([]*User, 0)
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
+	assert.NoError(t, err)
+	assert.Equal(t, MetaCursor, meta.Type())
 }
 
-func TestPaginatorMultipleRule(t *testing.T) {
-	p := New(&Config{
-		Rules: []Rule{
-			{Key: "Name"},
-			{Key: "ID", SQLRepr: "users.id"},
-		},
-	})
+func TestPaginatorMultipleRules(t *testing.T) {
+	paginator := New(WithRules(
+		Rule{Key: "Name"},
+		Rule{Key: "ID", SQLRepr: "users.id"},
+	))
 	query := goqu.Dialect("postgres").From("users").Select("id", "name")
-	query, err := p.PaginateDataset(query, &User{})
-	if assert.NoError(t, err) {
-		sql, args, err := query.Prepared(true).ToSQL()
-		if assert.NoError(t, err) {
-			assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "users"."id" ASC LIMIT $1`, sql)
-			assert.Equal(t, []any{int64(100 + 1)}, args)
-		}
-	}
+	db := sqlSelector{AssertSelect: func(dest any, query string, args ...any) error {
+		assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "users"."id" ASC LIMIT $1`, query)
+		assert.Equal(t, []any{int64(DefaultPaginatorLimit + 1)}, args)
+		return nil
+	}}
+
+	results := make([]*User, 0)
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
+	assert.NoError(t, err)
+	assert.Equal(t, MetaCursor, meta.Type())
 }
 
 func TestPaginatorCursor(t *testing.T) {
@@ -71,116 +99,150 @@ func TestPaginatorCursor(t *testing.T) {
 		{ID: 3, Name: "C"},
 	}
 
-	p1 := New(&Config{
-		Keys:  []string{"Name", "ID"},
-		Limit: 2,
-	})
+	db := sqlSelector{}
+	query := goqu.Dialect("postgres").From("users")
 
-	cursor1, err := p1.PaginateResults(&users)
+	paginator := New(
+		WithKeys("Name", "ID"),
+		WithLimit(2),
+	)
+
+	db.AssertSelect = func(dest any, query string, args ...any) error {
+		pDest := dest.(*[]*User)
+		*pDest = users[0:3] // return first two plus one
+		return nil
+	}
+
+	results := make([]*User, 0)
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
 	if assert.NoError(t, err) {
-		assert.Equal(t, 2, len(users))
-		if assert.NotNil(t, cursor1.After) {
-			assert.Equal(t, "WyJCIiwyXQ==", *cursor1.After)
+		assert.Len(t, results, 2)
+		cur := meta.Cursor()
+		if assert.NotNil(t, cur) && assert.NotNil(t, cur.After) {
+			assert.Equal(t, "WyJCIiwyXQ==", *cur.After) // ["B",2]
+			paginator.SetAfterCursor(*cur.After)
 		}
 	}
 
-	users2 := []*User{
-		{ID: 3, Name: "C"},
+	db.AssertSelect = func(dest any, query string, args ...any) error {
+		pDest := dest.(*[]*User)
+		*pDest = users[2:3] // return next two (only one result on this test)
+		return nil
 	}
 
-	p2 := New(&Config{
-		Keys:  []string{"Name", "ID"},
-		Limit: 2,
-		After: *cursor1.After,
-	})
-
-	cursor2, err := p2.PaginateResults(&users2)
+	meta, err = paginator.Paginate(context.Background(), &db, query, &results)
 	if assert.NoError(t, err) {
-		assert.Equal(t, 1, len(users2))
-		assert.Nil(t, cursor2.After)
-		if assert.NotNil(t, cursor2.Before) {
-			assert.Equal(t, "WyJDIiwzXQ==", *cursor2.Before)
+		cur := meta.Cursor()
+		if assert.NotNil(t, cur) {
+			assert.Nil(t, cur.After)
+			if assert.NotNil(t, cur.Before) {
+				assert.Equal(t, "WyJDIiwzXQ==", *cur.Before) // ["C",3]
+			}
 		}
 	}
 }
 
 func TestPaginatorMultipleCursor(t *testing.T) {
-	p := New(&Config{
-		Keys:  []string{"Name", "ID"},
-		Limit: 2,
-		After: "WyJCIiwyXQ==",
-	})
-	query := goqu.Dialect("postgres").From("users").Select("id", "name")
-	query, err := p.PaginateDataset(query, &User{})
-	if assert.NoError(t, err) {
-		sql, args, err := query.Prepared(true).ToSQL()
-		if assert.NoError(t, err) {
-			assert.Equal(t, `SELECT "id", "name" FROM "users" WHERE (("name" > $1) OR (("name" = $2) AND ("id" > $3))) ORDER BY "name" ASC, "id" ASC LIMIT $4`, sql)
-			assert.Equal(t, []any{"B", "B", int64(2), int64(3)}, args)
-		}
-	}
-}
-
-type sqlSelector struct {
-	Error error
-	Users []*User
-}
-
-func (s *sqlSelector) Select(_ context.Context, dest any, _ string, _ ...any) error {
-	if s.Error != nil {
-		return s.Error
-	}
-	pDest := dest.(*[]*User)
-	*pDest = s.Users
-	return nil
-}
-
-func TestPaginatorPaginate(t *testing.T) {
-	p := New(&Config{
-		Keys:  []string{"Name", "ID"},
-		Limit: 2,
-	})
+	paginator := New(
+		WithKeys("Name", "ID"),
+		WithLimit(2),
+		WithAfter("WyJCIiwyXQ=="), // ["B",2]
+	)
 
 	query := goqu.Dialect("postgres").From("users").Select("id", "name")
+	db := sqlSelector{AssertSelect: func(dest any, query string, args ...any) error {
+		assert.Equal(t, `SELECT "id", "name" FROM "users" WHERE (("name" > $1) OR (("name" = $2) AND ("id" > $3))) ORDER BY "name" ASC, "id" ASC LIMIT $4`, query)
+		assert.Equal(t, []any{"B", "B", int64(2), int64(3)}, args)
+		return nil
+	}}
 
 	results := make([]*User, 0)
-	selector := &sqlSelector{
-		Users: []*User{
-			{ID: 1, Name: "A"},
-			{ID: 2, Name: "B"},
-			{ID: 3, Name: "C"},
-		},
-	}
-	c, err := p.Paginate(context.Background(), selector, query, &results)
-	if assert.NoError(t, err) {
-		assert.Nil(t, c.Before)
-		if assert.NotNil(t, c.After) {
-			assert.Equal(t, "WyJCIiwyXQ==", *c.After)
-		}
-	}
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
+	assert.NoError(t, err)
+	assert.Equal(t, MetaCursor, meta.Type())
 }
 
 func TestPaginatorPaginateError(t *testing.T) {
-	p := New(&Config{})
+	paginator := New()
 
 	query := goqu.Dialect("postgres").From("users")
 	paginatorErr := errors.New("an error ocurred")
+	db := sqlSelector{Error: paginatorErr}
 
 	results := make([]*User, 0)
-	selector := &sqlSelector{
-		Error: paginatorErr,
-	}
-
-	_, err := p.Paginate(context.Background(), selector, query, &results)
+	_, err := paginator.Paginate(context.Background(), &db, query, &results)
 	assert.ErrorIs(t, err, paginatorErr)
 }
 
-func TestPaginatorPaginateDatasetError(t *testing.T) {
-	p := New(&Config{})
-
+func TestPaginatorPaginateInvalidModel(t *testing.T) {
+	paginator := New()
+	db := sqlSelector{}
 	query := goqu.Dialect("postgres").From("users")
-	var results struct{}
 
-	_, err := p.PaginateDataset(query, &results)
+	var results struct{}
+	_, err := paginator.Paginate(context.Background(), &db, query, &results)
 	assert.ErrorIs(t, err, ErrInvalidModel)
+}
+
+func TestPaginatorPaginateOffset(t *testing.T) {
+	users := []*User{
+		{ID: 1, Name: "A"},
+		{ID: 2, Name: "B"},
+		{ID: 3, Name: "C"},
+	}
+
+	paginator := New(
+		WithKeys("Name", "ID"),
+		WithLimit(2),
+		WithPage(1),
+	)
+
+	min := func(x, y int) int {
+		if x > y {
+			return y
+		}
+		return x
+	}
+
+	db := sqlSelector{
+		AssertSelect: func(dest any, query string, args ...any) error {
+			pDest := dest.(*[]*User)
+			if len(args) == 1 {
+				assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "id" ASC LIMIT $1`, query)
+				*pDest = users[0:args[0].(int64)]
+			} else {
+				assert.Equal(t, `SELECT "id", "name" FROM "users" ORDER BY "name" ASC, "id" ASC LIMIT $1 OFFSET $2`, query)
+				*pDest = users[args[0].(int64):min(len(users), int(args[0].(int64)+args[1].(int64)))]
+			}
+			return nil
+		},
+		AssertGet: func(dest any, query string, args ...any) error {
+			assert.Equal(t, `SELECT COUNT(*) AS "count" FROM "users"`, query)
+			pDest := dest.(*int)
+			*pDest = len(users)
+			return nil
+		},
+	}
+
+	query := goqu.Dialect("postgres").From("users").Select("id", "name")
+
+	results := make([]*User, 0)
+	meta, err := paginator.Paginate(context.Background(), &db, query, &results)
+	if assert.NoError(t, err) {
+		assert.Len(t, results, 2)
+		off := meta.Offset()
+		if assert.NotNil(t, off) {
+			assert.Equal(t, off.Total, len(users))
+		}
+	}
+
+	paginator.SetPage(2)
+	meta, err = paginator.Paginate(context.Background(), &db, query, &results)
+	if assert.NoError(t, err) {
+		assert.Len(t, results, 1)
+		off := meta.Offset()
+		if assert.NotNil(t, off) {
+			assert.Equal(t, off.Total, len(users))
+		}
+	}
 }

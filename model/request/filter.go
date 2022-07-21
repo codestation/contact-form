@@ -8,6 +8,7 @@ type Pagination struct {
 	Limit  *int    `query:"limit"`
 	After  *string `query:"after"`
 	Before *string `query:"before"`
+	Page   *int    `query:"page"`
 }
 
 type Filter struct {

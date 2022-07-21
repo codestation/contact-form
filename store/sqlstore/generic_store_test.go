@@ -12,6 +12,7 @@ import (
 	"megpoid.dev/go/contact-form/model"
 	"megpoid.dev/go/contact-form/store"
 	"megpoid.dev/go/contact-form/store/clause"
+	"megpoid.dev/go/contact-form/store/paginator"
 	"testing"
 	"time"
 )
@@ -198,7 +199,7 @@ func (s *storeSuite) TestStoreGetExternal() {
 		id  uuid.UUID
 		err error
 	}{
-		{uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")), nil},
+		{uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")), nil},
 		{uuid.Must(uuid.NewV7(uuid.MillisecondPrecision)), store.ErrNotFound},
 	}
 
@@ -222,7 +223,7 @@ func (s *storeSuite) TestStoreDeleteExternal() {
 		id  uuid.UUID
 		err error
 	}{
-		{uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")), nil},
+		{uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")), nil},
 		{uuid.Must(uuid.NewV7(uuid.MillisecondPrecision)), store.ErrNotFound},
 	}
 
@@ -256,9 +257,9 @@ func (s *storeSuite) TestBackendError() {
 	s.ErrorIs(err, store.ErrBackend)
 	err = st.Delete(ctx, 1)
 	s.ErrorIs(err, store.ErrBackend)
-	_, err = st.GetByExternalID(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))
+	_, err = st.GetByExternalID(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")))
 	s.ErrorIs(err, store.ErrBackend)
-	err = st.DeleteByExternalId(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))
+	err = st.DeleteByExternalId(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")))
 	s.ErrorIs(err, store.ErrBackend)
 
 	db.Result = &fakeSqlResult{Error: errors.New("not implemented")}
@@ -266,14 +267,14 @@ func (s *storeSuite) TestBackendError() {
 	s.ErrorIs(err, store.ErrBackend)
 	err = st.Delete(ctx, 1)
 	s.ErrorIs(err, store.ErrBackend)
-	err = st.DeleteByExternalId(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000000")))
+	err = st.DeleteByExternalId(ctx, uuid.Must(uuid.FromString("00000000-0000-0000-0000-000000000001")))
 	s.ErrorIs(err, store.ErrBackend)
 }
 
 func (s *storeSuite) TestIncludes() {
 	st := userStore{
 		genericStore: NewStore[*testUser](s.conn.store,
-			WithIncludes[*testUser]([]string{"profile"}),
+			WithIncludes[*testUser]("profile"),
 		),
 	}
 
@@ -285,10 +286,26 @@ func (s *storeSuite) TestIncludes() {
 
 	users, err := st.List(context.Background(), clause.WithIncludes("profile"))
 	if s.NoError(err) {
-		s.Len(users.Data, 1)
+		s.Equal(5, len(users.Data))
 		user := users.Data[0]
 		s.Zero(user.ProfileID)
 		s.NotNil(user.Profile)
 		s.Equal(model.ID(1), user.Profile.ID)
 	}
+}
+
+func (s *storeSuite) TestEach() {
+	st := userStore{genericStore: NewStore[*testUser](s.conn.store,
+		WithPaginatorOptions[*testUser](
+			paginator.WithLimit(2),
+		),
+	)}
+
+	count := 0
+	err := st.Each(context.Background(), func(entry *testUser) error {
+		count += 1
+		return nil
+	})
+	s.NoError(err)
+	s.Equal(5, count)
 }

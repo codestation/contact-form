@@ -4,6 +4,6 @@
 
 package model
 
-func NewString(s string) *string {
-	return &s
+func NewType[T any](v T) *T {
+	return &v
 }

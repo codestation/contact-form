@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"github.com/doug-martin/goqu/v9"
 	"megpoid.dev/go/contact-form/model/request"
+	"megpoid.dev/go/contact-form/model/response"
 	"megpoid.dev/go/contact-form/store/filter"
 	"megpoid.dev/go/contact-form/store/paginator"
-	"megpoid.dev/go/contact-form/store/paginator/cursor"
 )
 
 type Clause struct {
@@ -27,6 +27,14 @@ func NewClause(opts ...FilterOption) *Clause {
 	r := &Clause{}
 	r.ApplyOptions(opts...)
 	return r
+}
+
+func WithConfig(opts []paginator.Option) FilterOption {
+	return func(clause *Clause) {
+		if clause.paginator == nil {
+			clause.paginator = paginator.New(opts...)
+		}
+	}
 }
 
 func WithPaginatorRules(rules []paginator.Rule) FilterOption {
@@ -139,10 +147,33 @@ func (c *Clause) ApplyFilters(ctx context.Context, db paginator.SqlSelector, sd 
 			return nil, err
 		}
 
-		cur = &cursor.Cursor{}
+		cur = &paginator.Cursor{}
 	}
 
 	return cur, nil
+}
+
+func WithMeta(meta response.Meta) FilterOption {
+	return func(clause *Clause) {
+		if meta.NextCursor != nil {
+			if clause.paginator == nil {
+				clause.paginator = paginator.New()
+			}
+			clause.paginator.SetAfterCursor(*meta.NextCursor)
+		}
+		if meta.PrevCursor != nil {
+			if clause.paginator == nil {
+				clause.paginator = paginator.New()
+			}
+			clause.paginator.SetBeforeCursor(*meta.PrevCursor)
+		}
+		if meta.CurrentPage != nil {
+			if clause.paginator == nil {
+				clause.paginator = paginator.New()
+			}
+			clause.paginator.SetPage(*meta.CurrentPage)
+		}
+	}
 }
 
 func WithFilter(query *request.QueryParams) FilterOption {
@@ -164,6 +195,12 @@ func WithFilter(query *request.QueryParams) FilterOption {
 				clause.paginator = paginator.New()
 			}
 			clause.paginator.SetBeforeCursor(*query.Pagination.Before)
+		}
+		if query.Pagination.Page != nil {
+			if clause.paginator == nil {
+				clause.paginator = paginator.New()
+			}
+			clause.paginator.SetPage(*query.Pagination.Page)
 		}
 		if query.Filters != nil {
 			if clause.filterer == nil {

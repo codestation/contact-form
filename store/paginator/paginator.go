@@ -19,6 +19,7 @@ import (
 
 type SqlSelector interface {
 	Select(ctx context.Context, dest any, query string, args ...any) error
+	Get(ctx context.Context, dst any, query string, args ...any) error
 }
 
 // New creates paginator
@@ -32,10 +33,11 @@ func New(opts ...Option) *Paginator {
 
 // Paginator a builder doing pagination
 type Paginator struct {
-	cursor Cursor
+	cursor cursor.Cursor
 	rules  []Rule
 	limit  int
 	order  Order
+	page   *Page
 }
 
 // SetRules sets paging rules
@@ -75,10 +77,38 @@ func (p *Paginator) SetBeforeCursor(beforeCursor string) {
 	p.cursor.Before = &beforeCursor
 }
 
+// SetPage sets page number
+func (p *Paginator) SetPage(page int) {
+	p.page = &Page{Page: page}
+}
+
 func (p *Paginator) Paginate(ctx context.Context, db SqlSelector, ds *goqu.SelectDataset, dest any) (*Cursor, error) {
-	query, err := p.PaginateDataset(ds, dest)
+	query, err := p.paginateDataset(ds, dest)
 	if err != nil {
 		return nil, fmt.Errorf("failed to include pagination to query: %w", err)
+	}
+
+	if p.page == nil {
+		if query, err = p.paginateCursor(query, dest); err != nil {
+			return nil, err
+		}
+	} else {
+		queryCount := p.paginateCount(ds, dest)
+		sql, args, err := queryCount.Prepared(true).ToSQL()
+		if err != nil {
+			return nil, fmt.Errorf("failed to generate count SQL query: %w", err)
+		}
+
+		var count int
+		err = db.Get(ctx, &count, sql, args...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to execute count SQL query: %w", err)
+		}
+		p.page.Total = count
+		p.page.ItemsPerPage = p.limit
+
+		offset := uint((p.page.Page - 1) * p.limit)
+		query = p.paginateOffset(query, offset)
 	}
 
 	sql, args, err := query.Prepared(true).ToSQL()
@@ -91,15 +121,22 @@ func (p *Paginator) Paginate(ctx context.Context, db SqlSelector, ds *goqu.Selec
 		return nil, err
 	}
 
-	c, err := p.PaginateResults(dest)
-	if err != nil {
-		return nil, fmt.Errorf("failed to paginate results: %w", err)
+	meta := &Cursor{}
+	if p.page == nil {
+		c, err := p.paginateResultsCursor(dest)
+		if err != nil {
+			return nil, fmt.Errorf("failed to paginate results: %w", err)
+		}
+
+		meta.SetCursor(c)
+	} else {
+		meta.SetOffset(p.page)
 	}
 
-	return c, nil
+	return meta, nil
 }
 
-func (p *Paginator) PaginateDataset(query *goqu.SelectDataset, model any) (*goqu.SelectDataset, error) {
+func (p *Paginator) paginateDataset(query *goqu.SelectDataset, model any) (*goqu.SelectDataset, error) {
 	if err := p.validate(model); err != nil {
 		return nil, err
 	}
@@ -109,6 +146,10 @@ func (p *Paginator) PaginateDataset(query *goqu.SelectDataset, model any) (*goqu
 	query = query.Limit(uint(p.limit) + 1)
 	query = query.Order(p.buildOrderExpression()...)
 
+	return query, nil
+}
+
+func (p *Paginator) paginateCursor(query *goqu.SelectDataset, model any) (*goqu.SelectDataset, error) {
 	fields, err := p.decodeCursor(model)
 	if err != nil {
 		return nil, err
@@ -121,7 +162,16 @@ func (p *Paginator) PaginateDataset(query *goqu.SelectDataset, model any) (*goqu
 	return query, nil
 }
 
-func (p *Paginator) PaginateResults(dest any) (*Cursor, error) {
+func (p *Paginator) paginateCount(query *goqu.SelectDataset, model any) *goqu.SelectDataset {
+	query.ClearSelect()
+	return query.Select(goqu.COUNT(goqu.Star()).As("count"))
+}
+
+func (p *Paginator) paginateOffset(query *goqu.SelectDataset, offset uint) *goqu.SelectDataset {
+	return query.Limit(uint(p.limit)).Offset(offset)
+}
+
+func (p *Paginator) paginateResultsCursor(dest any) (*cursor.Cursor, error) {
 	if err := p.validate(dest); err != nil {
 		return nil, err
 	}
@@ -141,7 +191,7 @@ func (p *Paginator) PaginateResults(dest any) (*Cursor, error) {
 			return c, nil
 		}
 	}
-	return &Cursor{}, nil
+	return &cursor.Cursor{}, nil
 }
 
 func (p *Paginator) validate(dest any) (err error) {
@@ -252,8 +302,8 @@ func (p *Paginator) buildWhereExpression(fields []any) exp.ExpressionList {
 	return goqu.Or(queries...)
 }
 
-func (p *Paginator) encodeCursor(elems reflect.Value, hasMore bool) (*Cursor, error) {
-	result := &Cursor{}
+func (p *Paginator) encodeCursor(elems reflect.Value, hasMore bool) (*cursor.Cursor, error) {
+	result := &cursor.Cursor{}
 	encoder := cursor.NewEncoder(p.getEncoderFields())
 	// encode after cursor
 	if p.isBackward() || hasMore {

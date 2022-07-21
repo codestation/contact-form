@@ -4,9 +4,11 @@
 
 package paginator
 
+const DefaultPaginatorLimit = 100
+
 var defaultConfig = Config{
 	Keys:  []string{"ID"},
-	Limit: 100,
+	Limit: DefaultPaginatorLimit,
 	Order: ASC,
 }
 
@@ -23,6 +25,7 @@ type Config struct {
 	Order  Order
 	After  string
 	Before string
+	Page   int
 }
 
 // Apply applies config to paginator
@@ -45,6 +48,9 @@ func (c *Config) Apply(p *Paginator) {
 	}
 	if c.Before != "" {
 		p.SetBeforeCursor(c.Before)
+	}
+	if c.Page != 0 {
+		p.SetPage(c.Page)
 	}
 }
 
@@ -87,5 +93,12 @@ func WithAfter(c string) Option {
 func WithBefore(c string) Option {
 	return &Config{
 		Before: c,
+	}
+}
+
+// WithPage configures the pagination for the specified page
+func WithPage(page int) Option {
+	return &Config{
+		Page: page,
 	}
 }
