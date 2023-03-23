@@ -3,8 +3,6 @@ name: Docker
 on:
   push:
     branches: [ master ]
-  schedule:
-    - cron: "00 1 * * 0"
 
 env:
   REGISTRY: ghcr.io
@@ -40,10 +38,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=timestamp::$(date +'%s')"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
