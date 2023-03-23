@@ -7,7 +7,7 @@ package captcha
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,11 +18,13 @@ type ServiceType string
 const (
 	ReCaptchaService ServiceType = "recaptcha"
 	HCaptchaService  ServiceType = "hcaptcha"
+	TurnstileService ServiceType = "turnstile"
 )
 
 var (
 	ReCaptchaURL = "https://www.google.com/recaptcha/api/siteverify"
 	HCaptchaURL  = "https://hcaptcha.com/siteverify"
+	TurnstileURL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 )
 
 type Response struct {
@@ -63,6 +65,8 @@ func NewValidator(secret string, service ServiceType, opts ...Option) *Validator
 		v.verifyURL = HCaptchaURL
 	case ReCaptchaService:
 		v.verifyURL = ReCaptchaURL
+	case TurnstileService:
+		v.verifyURL = TurnstileURL
 	default:
 		panic("Invalid captcha service: " + service)
 	}
@@ -75,7 +79,7 @@ func NewValidator(secret string, service ServiceType, opts ...Option) *Validator
 }
 
 func (v *Validator) Validate(response string) (*Response, error) {
-	req, err := http.PostForm(string(v.verifyURL), url.Values{
+	req, err := http.PostForm(v.verifyURL, url.Values{
 		"secret":   {v.secret},
 		"response": {response},
 	})
@@ -89,7 +93,7 @@ func (v *Validator) Validate(response string) (*Response, error) {
 		return nil, fmt.Errorf("API returned error code %d", req.StatusCode)
 	}
 
-	body, err := ioutil.ReadAll(req.Body)
+	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		return nil, err
 	}

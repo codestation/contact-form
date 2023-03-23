@@ -51,7 +51,6 @@ steps:
       environment:
         goproxy:
           from_secret: goproxy_url
-
     when:
       event:
         - push
