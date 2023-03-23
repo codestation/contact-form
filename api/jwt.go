@@ -5,27 +5,29 @@
 package api
 
 import (
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
+	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
-type jwtCustomClaims struct {
+type JwtCustomClaims struct {
+	jwt.RegisteredClaims
 	UserID string `json:"user_id"`
-	jwt.StandardClaims
 }
 
 func (api *API) UseJWT(g *echo.Group) {
-	config := middleware.JWTConfig{
-		Claims:     &jwtCustomClaims{},
+	jwtConfig := echojwt.Config{
 		SigningKey: api.app.Config().GeneralSettings.JwtSecret,
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return &JwtCustomClaims{}
+		},
 	}
 
-	g.Use(middleware.JWTWithConfig(config))
+	g.Use(echojwt.WithConfig(jwtConfig))
 }
 
-func (api *API) GetClaim(c echo.Context, key string) string {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	return claims[key].(string)
+func (api *API) GetUserID(c echo.Context) string {
+	token := c.Get("user").(*jwt.Token)
+	claims := token.Claims.(*JwtCustomClaims)
+	return claims.UserID
 }

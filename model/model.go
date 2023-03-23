@@ -5,12 +5,13 @@
 package model
 
 import (
+	"reflect"
+	"time"
+
 	"github.com/georgysavva/scany/dbscan"
 	"github.com/gofrs/uuid"
 	"github.com/jackc/pgtype"
 	"github.com/jinzhu/inflection"
-	"reflect"
-	"time"
 )
 
 // ID is used as an alias for the model primary key to avoid using some int by mistake.
