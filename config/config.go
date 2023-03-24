@@ -7,10 +7,11 @@ package config
 import (
 	"errors"
 	"fmt"
-	"github.com/jinzhu/copier"
 	"log"
-	"megpoid.dev/go/contact-form/services/captcha"
 	"time"
+
+	"github.com/jinzhu/copier"
+	"megpoid.dev/go/contact-form/services/captcha"
 )
 
 const (
@@ -321,7 +322,9 @@ func (cfg *CaptchaSettings) SetDefaults() {
 }
 
 func (cfg *CaptchaSettings) Validate() error {
-	if cfg.CaptchaService != captcha.ReCaptchaService && cfg.CaptchaService != captcha.HCaptchaService {
+	if cfg.CaptchaService != captcha.ReCaptchaService &&
+		cfg.CaptchaService != captcha.HCaptchaService &&
+		cfg.CaptchaService != captcha.TurnstileService {
 		return fmt.Errorf("invalid captcha service name")
 	}
 	return nil
