@@ -6,6 +6,7 @@ package sqlstore
 
 import (
 	"context"
+
 	"megpoid.dev/go/contact-form/model"
 )
 
@@ -22,7 +23,7 @@ func attachRelation[T, U model.Modelable](
 	// list to hold the identifiers to query
 	var idList []model.ID
 	// map used to keep the above list with unique items
-	var uniqueMap = map[model.ID]struct{}{}
+	uniqueMap := map[model.ID]struct{}{}
 
 	for _, entry := range entries {
 		id := getRelationId(entry)
@@ -38,7 +39,7 @@ func attachRelation[T, U model.Modelable](
 	}
 
 	// keep the results in a map for quicker access
-	var resultMap = map[model.ID]U{}
+	resultMap := map[model.ID]U{}
 	for _, result := range results {
 		resultMap[result.GetID()] = result
 	}

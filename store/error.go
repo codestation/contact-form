@@ -14,9 +14,11 @@ type RepoError struct {
 	internal error
 }
 
-var ErrBackend = errors.New("repo: backend error")
-var ErrNotFound = errors.New("repo: entity not found")
-var ErrDuplicated = errors.New("repo: duplicated entity")
+var (
+	ErrBackend    = errors.New("repo: backend error")
+	ErrNotFound   = errors.New("repo: entity not found")
+	ErrDuplicated = errors.New("repo: duplicated entity")
+)
 
 func NewRepoError(err, internal error) error {
 	return &RepoError{internal: internal, Err: err}

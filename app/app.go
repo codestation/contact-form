@@ -5,8 +5,9 @@
 package app
 
 import (
-	"megpoid.dev/go/contact-form/config"
 	"time"
+
+	"megpoid.dev/go/contact-form/config"
 )
 
 // compile time validator for the interfaces

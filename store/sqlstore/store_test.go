@@ -7,8 +7,9 @@ package sqlstore
 import (
 	"context"
 	"database/sql"
-	"megpoid.dev/go/contact-form/config"
 	"testing"
+
+	"megpoid.dev/go/contact-form/config"
 
 	"github.com/stretchr/testify/assert"
 	"megpoid.dev/go/contact-form/store"

@@ -44,7 +44,7 @@ func NewFilter(c echo.Context) (*request.QueryParams, error) {
 				query.Filters = append(query.Filters, request.Filter{
 					Field:     filterParts[0],
 					Operation: filterParts[1],
-					Value:     value[0], //ignore other repeated filters
+					Value:     value[0], // ignore other repeated filters
 				})
 			} else {
 				err = multierr.Append(err, fmt.Errorf("invalid query param: %s", key))

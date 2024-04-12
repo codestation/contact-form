@@ -6,6 +6,7 @@ package app
 
 import (
 	"context"
+
 	"megpoid.dev/go/contact-form/config"
 	"megpoid.dev/go/contact-form/model"
 )

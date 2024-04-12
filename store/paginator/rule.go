@@ -5,8 +5,9 @@
 package paginator
 
 import (
-	"megpoid.dev/go/contact-form/store/paginator/util"
 	"reflect"
+
+	"megpoid.dev/go/contact-form/store/paginator/util"
 )
 
 // Rule for paginator

@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/georgysavva/scany/dbscan"
@@ -71,7 +72,6 @@ func (ss *SqlStore) WithTransaction(ctx context.Context, f func(s store.Store) e
 		s.initialize()
 		return f(s)
 	})
-
 	if err != nil {
 		return fmt.Errorf("sqlstore: transaction failed: %w", err)
 	}

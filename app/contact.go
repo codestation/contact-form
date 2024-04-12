@@ -7,6 +7,7 @@ package app
 import (
 	"context"
 	"errors"
+
 	"golang.org/x/text/message"
 	"megpoid.dev/go/contact-form/app/i18n"
 	"megpoid.dev/go/contact-form/model"

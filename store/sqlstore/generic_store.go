@@ -8,6 +8,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"reflect"
+
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/gofrs/uuid"
@@ -17,7 +19,6 @@ import (
 	"megpoid.dev/go/contact-form/store/clause"
 	"megpoid.dev/go/contact-form/store/filter"
 	"megpoid.dev/go/contact-form/store/paginator"
-	"reflect"
 )
 
 // compile time validator for the interfaces
@@ -261,7 +262,6 @@ func (s *genericStore[T]) Save(ctx context.Context, req T) error {
 
 	var id model.ID
 	err = s.db.Get(ctx, &id, sql, args...)
-
 	if err != nil {
 		if IsUniqueError(err) {
 			return store.NewRepoError(store.ErrDuplicated, err)
@@ -283,7 +283,6 @@ func (s *genericStore[T]) Update(ctx context.Context, req T) error {
 	}
 
 	result, err := s.db.Exec(ctx, sql, args...)
-
 	if err != nil {
 		return store.NewRepoError(store.ErrBackend, err)
 	}

@@ -5,12 +5,13 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"golang.org/x/text/message"
 	"megpoid.dev/go/contact-form/app"
 	"megpoid.dev/go/contact-form/app/i18n"
 	"megpoid.dev/go/contact-form/model"
-	"net/http"
 )
 
 func (api *API) InitContact() {

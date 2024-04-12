@@ -9,8 +9,10 @@ import (
 	"megpoid.dev/go/contact-form/app"
 )
 
-const appName = "forms"
-const apiVersion = "v1"
+const (
+	appName    = "forms"
+	apiVersion = "v1"
+)
 
 type API struct {
 	app  app.IApp

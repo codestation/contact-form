@@ -6,6 +6,7 @@ package response
 
 import (
 	"math"
+
 	"megpoid.dev/go/contact-form/model"
 	"megpoid.dev/go/contact-form/store/paginator"
 )

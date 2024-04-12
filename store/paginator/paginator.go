@@ -10,11 +10,12 @@ package paginator
 import (
 	"context"
 	"fmt"
+	"reflect"
+
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/georgysavva/scany/dbscan"
 	"megpoid.dev/go/contact-form/store/paginator/cursor"
-	"reflect"
 )
 
 type SqlSelector interface {

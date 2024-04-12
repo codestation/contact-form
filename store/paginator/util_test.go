@@ -5,9 +5,10 @@
 package paginator
 
 import (
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestReverse(t *testing.T) {

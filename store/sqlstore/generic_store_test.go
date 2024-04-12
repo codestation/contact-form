@@ -92,7 +92,7 @@ func (s *storeSuite) TestNewStore() {
 
 func (s *storeSuite) TestStoreGet() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		id  model.ID
 		err error
 	}{
@@ -124,7 +124,7 @@ func (s *storeSuite) TestStoreList() {
 
 func (s *storeSuite) TestStoreSave() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		name      string
 		profileId model.ID
 		err       error
@@ -149,7 +149,7 @@ func (s *storeSuite) TestStoreSave() {
 
 func (s *storeSuite) TestStoreUpdate() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		id  model.ID
 		err error
 	}{
@@ -174,7 +174,7 @@ func (s *storeSuite) TestStoreUpdate() {
 
 func (s *storeSuite) TestStoreDelete() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		id  model.ID
 		err error
 	}{
@@ -196,7 +196,7 @@ func (s *storeSuite) TestStoreDelete() {
 
 func (s *storeSuite) TestStoreGetExternal() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		id  uuid.UUID
 		err error
 	}{
@@ -220,7 +220,7 @@ func (s *storeSuite) TestStoreGetExternal() {
 
 func (s *storeSuite) TestStoreDeleteExternal() {
 	st := NewStore[*testUser](s.conn.store)
-	var tests = []struct {
+	tests := []struct {
 		id  uuid.UUID
 		err error
 	}{

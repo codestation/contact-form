@@ -7,10 +7,11 @@ package paginator
 import (
 	"context"
 	"errors"
+	"testing"
+
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/postgres"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type User struct {

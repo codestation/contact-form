@@ -11,8 +11,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var err = errors.New("test error")
-var internalErr = errors.New("internal error")
+var (
+	err         = errors.New("test error")
+	internalErr = errors.New("internal error")
+)
 
 func TestNewRepoError(t *testing.T) {
 	t.Run("full message", func(t *testing.T) {

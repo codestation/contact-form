@@ -8,12 +8,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	migrate "github.com/rubenv/sql-migrate"
 	"log"
-	"megpoid.dev/go/contact-form/config"
-	"megpoid.dev/go/contact-form/db"
 	"path"
 	"strings"
+
+	migrate "github.com/rubenv/sql-migrate"
+
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/db"
 )
 
 func RunMigrations(ctx context.Context, pool SqlExecutor, config *config.Config) error {

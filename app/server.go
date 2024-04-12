@@ -7,9 +7,10 @@ package app
 import (
 	"context"
 	"log"
-	"megpoid.dev/go/contact-form/config"
 	"net/http"
 	"time"
+
+	"megpoid.dev/go/contact-form/config"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"

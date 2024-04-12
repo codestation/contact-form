@@ -5,11 +5,12 @@
 package filter
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/doug-martin/goqu/v9"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/multierr"
-	"strings"
-	"testing"
 )
 
 func TestFilter_Apply(t *testing.T) {

@@ -9,7 +9,6 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"golang.org/x/text/language"
 	"html/template"
 	"io"
 	"io/fs"
@@ -18,6 +17,8 @@ import (
 	"os"
 	"path"
 	"time"
+
+	"golang.org/x/text/language"
 
 	mail "github.com/xhit/go-simple-mail/v2"
 	"golang.org/x/text/message"

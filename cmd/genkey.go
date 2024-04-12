@@ -45,7 +45,7 @@ var genkeyCmd = &cobra.Command{
 				fmt.Printf("Generated key: %s\n", hexKey)
 			}
 		} else {
-			err = ioutil.WriteFile(outputFile, []byte(hexKey+"\n"), 0600)
+			err = ioutil.WriteFile(outputFile, []byte(hexKey+"\n"), 0o600)
 			if err != nil {
 				return err
 			}
@@ -55,7 +55,6 @@ var genkeyCmd = &cobra.Command{
 		}
 
 		return nil
-
 	},
 }
 

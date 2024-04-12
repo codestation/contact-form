@@ -7,6 +7,7 @@ package clause
 import (
 	"context"
 	"fmt"
+
 	"github.com/doug-martin/goqu/v9"
 	"megpoid.dev/go/contact-form/model/request"
 	"megpoid.dev/go/contact-form/model/response"

@@ -8,8 +8,9 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"megpoid.dev/go/contact-form/store/paginator/util"
 	"reflect"
+
+	"megpoid.dev/go/contact-form/store/paginator/util"
 )
 
 // NewDecoder creates cursor decoder for model

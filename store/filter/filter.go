@@ -6,12 +6,13 @@ package filter
 
 import (
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/shopspring/decimal"
 	"go.uber.org/multierr"
-	"strconv"
-	"time"
 )
 
 // New creates a query filter

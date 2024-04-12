@@ -7,8 +7,9 @@ package cursor
 import (
 	"encoding/base64"
 	"encoding/json"
-	"megpoid.dev/go/contact-form/store/paginator/util"
 	"reflect"
+
+	"megpoid.dev/go/contact-form/store/paginator/util"
 )
 
 // NewEncoder creates cursor encoder

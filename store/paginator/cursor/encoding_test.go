@@ -5,11 +5,10 @@
 package cursor
 
 import (
-	"testing"
-	"time"
-
 	"errors"
 	"reflect"
+	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 )

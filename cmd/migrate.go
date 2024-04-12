@@ -6,14 +6,16 @@ package cmd
 
 import (
 	"context"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"log"
-	"megpoid.dev/go/contact-form/config"
-	"megpoid.dev/go/contact-form/store/sqlstore"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"megpoid.dev/go/contact-form/config"
+	"megpoid.dev/go/contact-form/store/sqlstore"
 )
 
 func unmarshalFunc(val any) error {

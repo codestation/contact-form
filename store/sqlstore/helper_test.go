@@ -7,11 +7,12 @@ package sqlstore
 import (
 	"context"
 	"database/sql"
+	"os"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"megpoid.dev/go/contact-form/config"
 	"megpoid.dev/go/contact-form/testdata"
-	"os"
-	"testing"
 )
 
 type connection struct {
