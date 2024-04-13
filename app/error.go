@@ -1,4 +1,4 @@
-// Copyright 2022 codestation. All rights reserved.
+// Copyright 2024 codestation. All rights reserved.
 // Use of this source code is governed by a MIT-license
 // that can be found in the LICENSE file.
 
@@ -12,9 +12,9 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"go.megpoid.dev/go-skel/pkg/repo"
 	"golang.org/x/text/message"
 	"megpoid.dev/go/contact-form/app/i18n"
-	"megpoid.dev/go/contact-form/store"
 )
 
 type ValidationError struct {
@@ -56,7 +56,7 @@ func NewAppError(message string, err error) *Error {
 
 		appErr.DetailedError = err.Error()
 		switch {
-		case errors.Is(err, store.ErrNotFound):
+		case errors.Is(err, repo.ErrNotFound):
 			appErr.StatusCode = http.StatusNotFound
 		case errors.As(err, &httpErr):
 			appErr.StatusCode = httpErr.Code

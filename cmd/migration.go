@@ -1,4 +1,4 @@
-// Copyright 2022 codestation. All rights reserved.
+// Copyright 2024 codestation. All rights reserved.
 // Use of this source code is governed by a MIT-license
 // that can be found in the LICENSE file.
 
@@ -6,7 +6,7 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path"
 	"regexp"
 	"strings"
@@ -42,6 +42,9 @@ var migrationCmd = &cobra.Command{
 	Short: "Create a database migration file",
 	Long:  `Create a database migration file`,
 	Args:  cobra.ExactArgs(1),
+	PreRun: func(cmd *cobra.Command, _ []string) {
+		cobra.CheckErr(viper.BindPFlags(cmd.Flags()))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		timestamp := time.Now().Format("20060102150405")
 		name := toSnakeCase(args[0])
@@ -54,7 +57,7 @@ var migrationCmd = &cobra.Command{
 		}
 
 		filename := path.Join(baseDir, timestamp+"_"+name+".sql")
-		err := ioutil.WriteFile(filename, []byte(templateContent), 0o644)
+		err := os.WriteFile(filename, []byte(templateContent), 0o644)
 		if err != nil {
 			return fmt.Errorf("failed to create migration file: %w", err)
 		}
@@ -64,7 +67,6 @@ var migrationCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(migrationCmd)
+
 	migrationCmd.Flags().Bool("seed", false, "Create a seed file")
-	err := viper.BindPFlags(migrationCmd.Flags())
-	cobra.CheckErr(err)
 }

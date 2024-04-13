@@ -1,0 +1,148 @@
+---
+openapi: 3.0.2
+info:
+  title: Contact form API
+  description: Contact form API - Documentation for the Contact form API
+  version: 1.0.0
+servers:
+  - # noinspection HttpUrlsUsage
+    url: 'http://{host}:{port}/apis/forms/v1'
+    description: Development server
+    variables:
+      host:
+        default: localhost
+      port:
+        default: '8000'
+paths:
+  "/health/live":
+    get:
+      summary: Check if the app is started
+      description: Check if the app is started and running successfully.
+      operationId: liveCheck
+      security: [ ]
+      parameters:
+        - $ref: "#/components/parameters/verbose"
+      responses:
+        '200':
+          description: The app is running
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      tags:
+        - Status
+  "/health/ready":
+    get:
+      summary: Check if the app is ready to accept connections
+      description: Check if the app has completed initialization and is ready to accept connections.
+      operationId: readyCheck
+      security: [ ]
+      parameters:
+        - $ref: "#/components/parameters/verbose"
+      responses:
+        '200':
+          description: The app is ready
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      tags:
+        - Status
+  "/contacts":
+    post:
+      summary: Register a new contact
+      operationId: saveContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactRequest"
+      responses:
+        '201':
+          description: Contact registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactResponse"
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+      tags:
+        - Contact
+components:
+  schemas:
+    ContactRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: The first name of the contact.
+          example: John
+        last_name:
+          type: string
+          description: The last name of the contact.
+          example: Doe
+        email:
+          type: string
+          description: The email address of the contact.
+          example: john.doe@example.com
+        message:
+          type: string
+          description: The message of the contact.
+          example: Hello, I would like to know more about your services.
+        company:
+          type: string
+          description: The company of the contact.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the contact.
+          example: +1 555 123 4567
+        subject:
+          type: string
+          description: The subject of the contact.
+          example: Inquiry
+        captcha_response:
+          type: string
+          description: The captcha response of the form.
+          example: 03AGdBq26gJ
+      required:
+        - first_name
+        - email
+        - message
+    ContactResponse:
+        type: object
+        properties:
+          status:
+            type: string
+            description: The status of the request.
+            example: ok
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The error message.
+        location:
+          type: string
+          description: The location of the error.
+        detailed_error:
+          type: string
+          description: The detailed error description.
+        status_code:
+          type: string
+          description: The status code of the error.
+      required:
+        - message
+        - status_code
+  parameters:
+    verbose:
+      name: verbose
+      in: query
+      description: Flag to enable verbose response.
+      schema:
+        type: boolean
+        example: true
+  responses:
+    UnexpectedError:
+      description: An unexpected error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

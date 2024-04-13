@@ -2,6 +2,76 @@
     "language": "en",
     "messages": [
         {
+            "id": "Invalid username or password",
+            "message": "Invalid username or password",
+            "translation": "Invalid username or password",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to sign token",
+            "message": "Failed to sign token",
+            "translation": "Failed to sign token",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Profile not found",
+            "message": "Profile not found",
+            "translation": "Profile not found",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to get profile",
+            "message": "Failed to get profile",
+            "translation": "Failed to get profile",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to list profiles",
+            "message": "Failed to list profiles",
+            "translation": "Failed to list profiles",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Email is already registered with another profile",
+            "message": "Email is already registered with another profile",
+            "translation": "Email is already registered with another profile",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to save profile",
+            "message": "Failed to save profile",
+            "translation": "Failed to save profile",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to update profile",
+            "message": "Failed to update profile",
+            "translation": "Failed to update profile",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "Failed to remove profile",
+            "message": "Failed to remove profile",
+            "translation": "Failed to remove profile",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "An error occurred",
+            "message": "An error occurred",
+            "translation": "An error occurred",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
             "id": "Failed to read request",
             "message": "Failed to read request",
             "translation": "Failed to read request",
@@ -12,6 +82,30 @@
             "id": "The request did not pass validation",
             "message": "The request did not pass validation",
             "translation": "The request did not pass validation",
+            "translatorComment": "Copied from source.",
+            "fuzzy": true
+        },
+        {
+            "id": "[{AppName}] - New contact",
+            "message": "[{AppName}] - New contact",
+            "translation": "[{AppName}] - New contact",
+            "translatorComment": "Copied from source.",
+            "placeholders": [
+                {
+                    "id": "AppName",
+                    "string": "%[1]s",
+                    "type": "string",
+                    "underlyingType": "string",
+                    "argNum": 1,
+                    "expr": "m.appName"
+                }
+            ],
+            "fuzzy": true
+        },
+        {
+            "id": "Thanks for contacting us",
+            "message": "Thanks for contacting us",
+            "translation": "Thanks for contacting us",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         },
@@ -40,37 +134,6 @@
             "id": "Failed to send email",
             "message": "Failed to send email",
             "translation": "Failed to send email",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "An error occurred",
-            "message": "An error occurred",
-            "translation": "An error occurred",
-            "translatorComment": "Copied from source.",
-            "fuzzy": true
-        },
-        {
-            "id": "[{AppName}] - New contact",
-            "message": "[{AppName}] - New contact",
-            "translation": "[{AppName}] - New contact",
-            "translatorComment": "Copied from source.",
-            "placeholders": [
-                {
-                    "id": "AppName",
-                    "string": "%[1]s",
-                    "type": "string",
-                    "underlyingType": "string",
-                    "argNum": 1,
-                    "expr": "m.appName"
-                }
-            ],
-            "fuzzy": true
-        },
-        {
-            "id": "Thanks for contacting us",
-            "message": "Thanks for contacting us",
-            "translation": "Thanks for contacting us",
             "translatorComment": "Copied from source.",
             "fuzzy": true
         }

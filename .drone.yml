@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 name: default
-type: docker
+type: kubernetes
 
 platform:
   os: linux
@@ -9,7 +9,7 @@ platform:
 
 steps:
   - name: lint
-    image: golangci/golangci-lint:v1.52.1
+    image: golangci/golangci-lint:v1.57.2
     commands:
       - golangci-lint run --no-config -v --timeout 10m ./...
     environment:
@@ -56,22 +56,9 @@ steps:
         - push
         - tag
 
-  - name: update
-    image: plugins/webhook
-    settings:
-      urls: http://updater:8000/apis/swarm/v1/update
-      token_value:
-        from_secret: updater_apikey
-      template: |
-        {
-          "images": [
-            "registry.megpoid.dev/codestation/contact-form"
-          ]
-        }
-
 services:
   - name: database
-    image: postgres:14
+    image: postgres:16
     environment:
       POSTGRES_DB: testdb
       POSTGRES_PASSWORD: secret

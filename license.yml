@@ -1,9 +1,9 @@
 # Install license tool
 #   go install github.com/palantir/go-license@latest
 # Verify licences
-#   find -name "*.go" -not -name catalog.go -exec go-license --config license.yml --verify {} \;
+#   find -name "*.go" -not -name catalog.go -exec go run github.com/palantir/go-license@v1.36.0 --config license.yml --verify {} \;
 # Add license to files
-#   find -name "*.go" -not -name catalog.go -exec go-license --config license.yml {} \;
+#   find -name "*.go" -not -name catalog.go -exec go run github.com/palantir/go-license@v1.36.0 --config license.yml {} \;
 
 header: |
   // Copyright {{YEAR}} codestation. All rights reserved.

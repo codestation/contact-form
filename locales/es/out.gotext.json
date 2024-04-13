@@ -2,6 +2,56 @@
     "language": "es",
     "messages": [
         {
+            "id": "Invalid username or password",
+            "message": "Invalid username or password",
+            "translation": ""
+        },
+        {
+            "id": "Failed to sign token",
+            "message": "Failed to sign token",
+            "translation": ""
+        },
+        {
+            "id": "Profile not found",
+            "message": "Profile not found",
+            "translation": ""
+        },
+        {
+            "id": "Failed to get profile",
+            "message": "Failed to get profile",
+            "translation": ""
+        },
+        {
+            "id": "Failed to list profiles",
+            "message": "Failed to list profiles",
+            "translation": ""
+        },
+        {
+            "id": "Email is already registered with another profile",
+            "message": "Email is already registered with another profile",
+            "translation": ""
+        },
+        {
+            "id": "Failed to save profile",
+            "message": "Failed to save profile",
+            "translation": ""
+        },
+        {
+            "id": "Failed to update profile",
+            "message": "Failed to update profile",
+            "translation": ""
+        },
+        {
+            "id": "Failed to remove profile",
+            "message": "Failed to remove profile",
+            "translation": ""
+        },
+        {
+            "id": "An error occurred",
+            "message": "An error occurred",
+            "translation": "Ha ocurrido un error"
+        },
+        {
             "id": "Failed to read request",
             "message": "Failed to read request",
             "translation": "Error al leer la petición"
@@ -10,31 +60,6 @@
             "id": "The request did not pass validation",
             "message": "The request did not pass validation",
             "translation": "La petición no pasó la validación"
-        },
-        {
-            "id": "Failed to validate captcha, please try again later.",
-            "message": "Failed to validate captcha, please try again later.",
-            "translation": "Error al validar el captcha, por favor intente mas tarde."
-        },
-        {
-            "id": "Captcha validation failed",
-            "message": "Captcha validation failed",
-            "translation": "La validación de captcha ha fallado"
-        },
-        {
-            "id": "Failed to save contact",
-            "message": "Failed to save contact",
-            "translation": "Error al salvar el contacto"
-        },
-        {
-            "id": "Failed to send email",
-            "message": "Failed to send email",
-            "translation": "Error al enviar el correo"
-        },
-        {
-            "id": "An error occurred",
-            "message": "An error occurred",
-            "translation": "Ha ocurrido un error"
         },
         {
             "id": "[{AppName}] - New contact",
@@ -55,6 +80,26 @@
             "id": "Thanks for contacting us",
             "message": "Thanks for contacting us",
             "translation": "Gracias por contactarnos"
+        },
+        {
+            "id": "Failed to validate captcha, please try again later.",
+            "message": "Failed to validate captcha, please try again later.",
+            "translation": "Error al validar el captcha, por favor intente mas tarde."
+        },
+        {
+            "id": "Captcha validation failed",
+            "message": "Captcha validation failed",
+            "translation": "La validación de captcha ha fallado"
+        },
+        {
+            "id": "Failed to save contact",
+            "message": "Failed to save contact",
+            "translation": "Error al salvar el contacto"
+        },
+        {
+            "id": "Failed to send email",
+            "message": "Failed to send email",
+            "translation": "Error al enviar el correo"
         }
     ]
 }

@@ -1,21 +1,24 @@
-// Copyright 2022 codestation. All rights reserved.
+// Copyright 2024 codestation. All rights reserved.
 // Use of this source code is governed by a MIT-license
 // that can be found in the LICENSE file.
 
 package cmd
 
 import (
-	"fmt"
+	"log/slog"
 
-	"megpoid.dev/go/contact-form/version"
+	"go.megpoid.dev/go-skel/version"
 
 	"github.com/spf13/cobra"
 )
 
-const versionFormatter = "GoApp version: %s, commit: %s, date: %s, clean build: %t\n"
-
 func printVersion() {
-	fmt.Printf(versionFormatter, version.Tag, version.Revision, version.LastCommit, !version.Modified)
+	slog.Info("contact-form",
+		slog.String("version", version.Tag),
+		slog.String("commit", version.Revision),
+		slog.Time("date", version.LastCommit),
+		slog.Bool("clean_build", !version.Modified),
+	)
 }
 
 // versionCmd represents the version command
