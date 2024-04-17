@@ -17,12 +17,12 @@ steps:
         from_secret: goproxy_url
 
   - name: postgres-healthcheck
-    image: postgres:14
+    image: postgres:16
     commands:
       - while ! pg_isready -h database -U postgres; do sleep 1; done
 
   - name: test
-    image: golang:1.20
+    image: golang:1.22
     commands:
       - go install github.com/rubenv/sql-migrate/sql-migrate@v1.3.1
       - sql-migrate up -env production
@@ -34,11 +34,10 @@ steps:
         from_secret: goproxy_url
 
   - name: build
-    image: ghcr.io/codestation/drone-docker
+    image: ghcr.io/codestation/drone-kaniko
     settings:
       repo: registry.megpoid.dev/codestation/contact-form
       tags: latest
-      buildkit: true
       registry: registry.megpoid.dev
       username:
         from_secret: docker_username
