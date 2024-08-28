@@ -44,7 +44,7 @@ func (u *ContactInteractor) SaveContact(ctx context.Context, req *model.ContactR
 		}
 
 		if !response.Passed() {
-			return nil, apperror.NewAppError(t.Sprintf("Captcha validation failed"), errors.New(response.Errors()))
+			return nil, apperror.NewValidationError(t.Sprintf("Captcha validation failed"), errors.New(response.Errors()))
 		}
 	}
 
