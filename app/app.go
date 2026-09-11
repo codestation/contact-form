@@ -126,11 +126,12 @@ func NewApp(cfg Config) (*App, error) {
 
 	skipperFunc := mwpkg.WithSkipperFunc(func(ctx echo.Context) bool {
 		path := ctx.Path()
-		return strings.HasPrefix(path, controller.BaseURL()+"/swagger")
+		return path == "/" || strings.HasPrefix(path, controller.BaseURL()+"/swagger")
 	})
 
 	oapiMiddleware := mwpkg.OapiValidator(spec, skipperFunc)
 	e.Use(oapiMiddleware)
+	e.GET("/", rootHandler)
 
 	group := e.Group(controller.BaseURL())
 	swagger := echo.WrapHandler(handler)
@@ -146,6 +147,18 @@ func NewApp(cfg Config) (*App, error) {
 	oapi.RegisterHandlersWithBaseURL(e, &ctrl, controller.BaseURL())
 
 	return s, nil
+}
+
+type appInfo struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
+
+func rootHandler(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, appInfo{
+		Name:    controller.AppName(),
+		Version: controller.APIVersion(),
+	})
 }
 
 func (s *App) Start() error {

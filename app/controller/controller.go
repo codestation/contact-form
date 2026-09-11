@@ -17,6 +17,14 @@ func BaseURL() string {
 	return "/apis/" + appName + "/" + apiVersion
 }
 
+func AppName() string {
+	return appName
+}
+
+func APIVersion() string {
+	return apiVersion
+}
+
 var _ oapi.ServerInterface = &Controller{}
 
 type Controller struct {
