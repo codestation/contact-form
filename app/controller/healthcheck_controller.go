@@ -40,7 +40,7 @@ func (ctrl *HealthcheckController) ReadyCheck(ctx echo.Context, params oapi.Read
 		var check strings.Builder
 
 		if err != nil {
-			check.WriteString(fmt.Sprintf("[+] ping err: %s\n", err.Error()))
+			fmt.Fprintf(&check, "[+] ping err: %s\n", err.Error())
 			check.WriteString("ready check failed\n")
 		} else {
 			check.WriteString("[+] ping ok\n")

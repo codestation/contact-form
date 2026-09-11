@@ -21,7 +21,10 @@ func (l LanguageTagKey) String() string {
 func LoadMessagePrinter(preferLangKey string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user, _ := c.Get(preferLangKey).(string)
+			user := ""
+			if preferredLanguage, ok := c.Get(preferLangKey).(string); ok {
+				user = preferredLanguage
+			}
 			pref := c.Request().Header.Get("Accept-Language")
 			lang := c.QueryParam("lang")
 			tags := message.MatchLanguage(lang, user, pref)

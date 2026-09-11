@@ -51,7 +51,7 @@ func NewMailer(cfg Config) *Mailer {
 		replyTo:   cfg.GeneralSettings.ReplyTo,
 	}
 	f := openTemplate("registry.tmpl.html", cfg.GeneralSettings.TemplatesPath, cfg.GeneralSettings.DefaultLanguage)
-	defer f.Close()
+	defer closeTemplate(f)
 
 	data, err := io.ReadAll(f)
 	if err != nil {
@@ -61,7 +61,7 @@ func NewMailer(cfg Config) *Mailer {
 	registryTmpl := template.Must(template.New("registry").Parse(string(data)))
 
 	f = openTemplate("client.tmpl.html", cfg.GeneralSettings.TemplatesPath, cfg.GeneralSettings.DefaultLanguage)
-	defer f.Close()
+	defer closeTemplate(f)
 
 	data, err = io.ReadAll(f)
 	if err != nil {
@@ -128,6 +128,12 @@ func NewMailer(cfg Config) *Mailer {
 	return m
 }
 
+func closeTemplate(file io.Closer) {
+	if err := file.Close(); err != nil {
+		log.Printf("Failed to close template: %s", err)
+	}
+}
+
 type templateData struct {
 	AppName   string
 	FirstName string
@@ -181,9 +187,9 @@ func (m *Mailer) Send(contact *model.Contact) error {
 	}
 
 	defer func(client *mail.SMTPClient) {
-		err := client.Close()
-		if err != nil {
-			log.Printf("Failed to clone SMTP connection: %s", err.Error())
+		closeErr := client.Close()
+		if closeErr != nil {
+			log.Printf("Failed to close SMTP connection: %s", closeErr.Error())
 		}
 	}(client)
 

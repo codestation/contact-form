@@ -1,0 +1,24 @@
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/go:2-1.27-trixie
+    command: sleep infinity
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - .:/workspace:cached
+      - go-mod-cache:/home/vscode/go/pkg
+      - go-build-cache:/home/vscode/.cache/go-build
+    environment:
+      APP_DSN: postgres://contactform:secret@postgres:5432/contactform?sslmode=disable
+      APP_EMAIL_TO: dev@example.test
+      APP_SMTP_AUTH: none
+      APP_SMTP_ENCRYPTION: none
+      GOMODCACHE: /home/vscode/go/pkg/mod
+      GOCACHE: /home/vscode/.cache/go-build
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  go-mod-cache:
+  go-build-cache:

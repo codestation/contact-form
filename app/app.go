@@ -55,7 +55,13 @@ func NewApp(cfg Config) (*App, error) {
 	s := &App{cfg: cfg}
 
 	// Database initialization
-	pool, err := sql.NewConnection(sql.Config(cfg.Database))
+	pool, err := sql.NewConnection(sql.Config{
+		DataSourceName:  cfg.Database.DataSourceName,
+		MaxIdleConns:    cfg.Database.MaxIdleConns,
+		MaxOpenConns:    cfg.Database.MaxOpenConns,
+		ConnMaxLifetime: cfg.Database.ConnMaxLifetime,
+		ConnMaxIdleTime: cfg.Database.ConnMaxIdleTime,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +106,7 @@ func NewApp(cfg Config) (*App, error) {
 	}))
 	e.Use(middleware.Recover())
 	e.Use(i18n.LoadMessagePrinter("user_lang"))
-	e.Use(middleware.Logger())
+	e.Use(middleware.RequestLogger())
 	e.Use(middleware.BodyLimit(cfg.Server.BodyLimit))
 	e.Use(mwpkg.SlogRequestID())
 	e.Validator = validator.NewCustomValidator()

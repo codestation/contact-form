@@ -9,7 +9,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"go.megpoid.dev/go-skel/pkg/repo"
 )
@@ -91,7 +90,7 @@ func (s *unitOfWorkSuite) TestTransactionCommit() {
 		s.NoError(err, "commit transaction")
 	}
 
-	assert.NoError(s.T(), err)
+	s.NoError(err)
 }
 
 func (s *unitOfWorkSuite) TestTransactionRollbackOnCommit() {
@@ -102,7 +101,7 @@ func (s *unitOfWorkSuite) TestTransactionRollbackOnCommit() {
 		s.NoError(err, "rollback transaction")
 	}
 
-	assert.NoError(s.T(), err)
+	s.NoError(err)
 }
 
 func (s *unitOfWorkSuite) TestTransactionRollbackOnCommitNested() {
@@ -121,7 +120,7 @@ func (s *unitOfWorkSuite) TestTransactionRollbackOnCommitNested() {
 		return nil
 	})
 
-	assert.NoError(s.T(), err)
+	s.NoError(err)
 }
 
 func (s *unitOfWorkSuite) TestCommitWithoutBegin() {

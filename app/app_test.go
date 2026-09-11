@@ -14,7 +14,7 @@ import (
 
 func TestRootHandler(t *testing.T) {
 	e := echo.New()
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	req := httptest.NewRequest(http.MethodGet, "/", http.NoBody)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
 
@@ -22,7 +22,7 @@ func TestRootHandler(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, echo.MIMEApplicationJSONCharsetUTF8, rec.Header().Get(echo.HeaderContentType))
+	assert.Equal(t, echo.MIMEApplicationJSON, rec.Header().Get(echo.HeaderContentType))
 
 	var response appInfo
 	require.NoError(t, json.NewDecoder(rec.Body).Decode(&response))

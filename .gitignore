@@ -1,5 +1,6 @@
 /.idea
-/.vscode
+/.vscode/*
+!/.vscode/launch.json
 *.sqlite
 cover.out
 .contact-form.yml

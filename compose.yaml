@@ -1,0 +1,57 @@
+x-contact-form: &contact-form
+  build:
+    context: .
+    target: dev
+  command: ["go", "run", ".", "serve"]
+  environment:
+    APP_DSN: postgres://contactform:secret@postgres:5432/contactform?sslmode=disable
+    APP_EMAIL_TO: dev@example.test
+    APP_SMTP_AUTH: none
+    APP_SMTP_ENCRYPTION: none
+  volumes:
+    - ./:/src
+    - go-mod-cache:/home/vscode/go/pkg
+    - go-build-cache:/home/vscode/.cache/go-build
+
+services:
+  app:
+    <<: *contact-form
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
+  migrate:
+    <<: *contact-form
+    command: ["go", "run", ".", "migrate", "--seed"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:18.6
+    stop_grace_period: 1m
+    stop_signal: SIGINT
+    shm_size: 1gb
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: contactform
+      POSTGRES_USER: contactform
+      POSTGRES_PASSWORD: secret
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U contactform -d contactform"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    volumes:
+      - postgres:/var/lib/postgresql
+
+volumes:
+  go-mod-cache:
+  go-build-cache:
+  postgres:

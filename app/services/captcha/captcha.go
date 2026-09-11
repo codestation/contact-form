@@ -87,7 +87,12 @@ func (v *Validator) Validate(response string) (*Response, error) {
 		return nil, err
 	}
 
-	defer req.Body.Close()
+	defer func() {
+		if closeErr := req.Body.Close(); closeErr != nil {
+			// The response has already been consumed; closing errors cannot affect validation.
+			return
+		}
+	}()
 
 	if req.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("API returned error code %d", req.StatusCode)

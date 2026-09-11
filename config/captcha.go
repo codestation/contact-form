@@ -5,7 +5,7 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 
 	"github.com/spf13/pflag"
 	"megpoid.dev/go/contact-form/app/services/captcha"
@@ -30,7 +30,7 @@ func (cfg *CaptchaSettings) Validate() error {
 	if cfg.CaptchaService != captcha.ReCaptchaService &&
 		cfg.CaptchaService != captcha.HCaptchaService &&
 		cfg.CaptchaService != captcha.TurnstileService {
-		return fmt.Errorf("invalid captcha service name")
+		return errors.New("invalid captcha service name")
 	}
 	return nil
 }

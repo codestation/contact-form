@@ -1,0 +1,44 @@
+version: "2"
+
+run:
+  timeout: 10m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  default: standard
+  enable:
+    - copyloopvar
+    - errorlint
+    - misspell
+    - modernize
+    - nilnesserr
+    - nilnil
+    - nolintlint
+    - perfsprint
+    - usestdlibvars
+    - whitespace
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+    govet:
+      enable-all: true
+      disable:
+        - fieldalignment
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    gofumpt:
+      extra:
+        group-params: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

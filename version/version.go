@@ -28,7 +28,10 @@ func init() {
 			case "vcs.revision":
 				Revision = setting.Value
 			case "vcs.time":
-				LastCommit, _ = time.Parse(time.RFC3339, setting.Value)
+				lastCommit, err := time.Parse(time.RFC3339, setting.Value)
+				if err == nil {
+					LastCommit = lastCommit
+				}
 			case "vcs.modified":
 				Modified = setting.Value == "true"
 			}

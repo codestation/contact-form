@@ -1,0 +1,58 @@
+{
+	"name": "Contact Form",
+	"dockerComposeFile": [
+		"../compose.yaml",
+		"compose.yaml"
+	],
+	"service": "devcontainer",
+	"workspaceFolder": "/workspace",
+	"runServices": [
+		"postgres"
+	],
+	"shutdownAction": "stopCompose",
+	"postCreateCommand": {
+		"permissions": "sudo chown -R vscode:vscode /home/vscode/go /home/vscode/.cache",
+		"download": "go mod download"
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"editor.formatOnSave": true,
+				"files.insertFinalNewline": true,
+				"go.lintTool": "golangci-lint",
+				"gopls": {
+					"formatting.gofumpt": true
+				},
+				"pgsql.serverGroups": [
+					{
+						"name": "Servers",
+						"id": "contact-form-servers",
+						"isDefault": true
+					}
+				],
+				"pgsql.connections": [
+					{
+						"id": "contact-form-postgres",
+						"groupId": "contact-form-servers",
+						"authenticationType": "SqlLogin",
+						"connectTimeout": 15,
+						"applicationName": "vscode-pgsql",
+						"clientEncoding": "utf8",
+						"sslmode": "disable",
+						"savePassword": true,
+						"server": "postgres",
+						"user": "contactform",
+						"password": "secret",
+						"database": "contactform",
+						"profileName": "contact-form"
+					}
+				]
+			},
+			"extensions": [
+				"golang.go",
+				"ms-ossdata.vscode-pgsql"
+			]
+		}
+	},
+	"remoteUser": "vscode"
+}
